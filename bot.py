@@ -29,12 +29,12 @@ def start(message):
         else:
             if is_user["ban"] == 0:
                 if is_user["username"] != message.from_user.username:
-                    bot.update_one(
+                    users.update_one(
                         {"_id": message.from_user.id},
                         {"$set": {"username": message.from_user.username}},
                     )
                 if is_user["fname"] != message.from_user.first_name:
-                    bot.update_one(
+                    users.update_one(
                         {"_id": message.from_user.id},
                         {"$set": {"username": message.from_user.first_name}},
                     )
