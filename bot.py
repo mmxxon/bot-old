@@ -60,12 +60,12 @@ def ban(message):
             is_user = users.find_one({"_id": usr})
             if str(is_user) != "None":
                 if is_user["username"] != message.from_user.username:
-                    bot.update_one(
+                    users.update_one(
                         {"_id": message.from_user.id},
                         {"$set": {"username": message.from_user.username}},
                     )
                 if is_user["fname"] != message.from_user.first_name:
-                    bot.update_one(
+                    users.update_one(
                         {"_id": message.from_user.id},
                         {"$set": {"username": message.from_user.first_name}},
                     )
@@ -93,12 +93,12 @@ def unban(message):
             is_user = users.find_one({"_id": usr})
             if str(is_user) != "None":
                 if is_user["username"] != message.from_user.username:
-                    bot.update_one(
+                    users.update_one(
                         {"_id": message.from_user.id},
                         {"$set": {"username": message.from_user.username}},
                     )
                 if is_user["fname"] != message.from_user.first_name:
-                    bot.update_one(
+                    users.update_one(
                         {"_id": message.from_user.id},
                         {"$set": {"username": message.from_user.first_name}},
                     )
