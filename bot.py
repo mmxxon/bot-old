@@ -28,6 +28,16 @@ def start(message):
             bot.reply_to(message, utils.txtstart, reply_markup=key)
         else:
             if is_user["ban"] == 0:
+                if is_user["username"] != message.from_user.username:
+                    bot.update_one(
+                        {"_id": message.from_user.id},
+                        {"$set": {"username": message.from_user.username}},
+                    )
+                if is_user["fname"] != message.from_user.first_name:
+                    bot.update_one(
+                        {"_id": message.from_user.id},
+                        {"$set": {"username": message.from_user.first_name}},
+                    )
                 if is_user["small"] == 0:
                     data = utils.small(1)
                 else:
@@ -49,6 +59,16 @@ def ban(message):
             usr = int(i)
             is_user = users.find_one({"_id": usr})
             if str(is_user) != "None":
+                if is_user["username"] != message.from_user.username:
+                    bot.update_one(
+                        {"_id": message.from_user.id},
+                        {"$set": {"username": message.from_user.username}},
+                    )
+                if is_user["fname"] != message.from_user.first_name:
+                    bot.update_one(
+                        {"_id": message.from_user.id},
+                        {"$set": {"username": message.from_user.first_name}},
+                    )
                 if is_user["ban"] == 0:
                     users.update_one({"_id": usr}, {"$set": {"ban": 1}})
                     name = is_user["fname"]
@@ -72,6 +92,16 @@ def unban(message):
             usr = int(i)
             is_user = users.find_one({"_id": usr})
             if str(is_user) != "None":
+                if is_user["username"] != message.from_user.username:
+                    bot.update_one(
+                        {"_id": message.from_user.id},
+                        {"$set": {"username": message.from_user.username}},
+                    )
+                if is_user["fname"] != message.from_user.first_name:
+                    bot.update_one(
+                        {"_id": message.from_user.id},
+                        {"$set": {"username": message.from_user.first_name}},
+                    )
                 if is_user["ban"] == 1:
                     users.update_one({"_id": usr}, {"$set": {"ban": 0}})
                     name = is_user["fname"]
