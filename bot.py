@@ -3,6 +3,7 @@ import os
 from pymongo import MongoClient
 import utils
 from utils import TOKEN, uri, bot_id, extract_arg, heroku_check, kat
+import datetime
 
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
@@ -156,11 +157,12 @@ def papuga(message):
         find = papug.find_one({"_id": message.photo[-1].file_id})
         if str(find) == "None":
             bot.send_photo(-1001477733398, message.photo[-1].file_id)
-            papug.insert_one({"_id": message.photo[-1].file_id})
-        else:
-            papug.delete_one({"_id": message.photo[-1].file_id})
-            bot.send_photo(-1001477733398, message.photo[-1].file_id)
-            bot.send_message(chat_id=-1001477733398, text="deleted")
+            papug.insert_one(
+                {
+                    "_id": message.photo[-1].file_id,
+                    "time": str(datetime.datetime.now()),
+                }
+            )
 
 
 @bot.message_handler(commands=["papuga"])
