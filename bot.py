@@ -7,6 +7,7 @@ from utils import TOKEN, uri, bot_id, extract_arg, heroku_check
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
 users = mydb["users"]
+papug = mydb["papug"]
 bot = telebot.AsyncTeleBot(TOKEN)
 
 
@@ -124,7 +125,11 @@ def mass(message):
         txt = " ".join(argument)
         cursor = users.find({})
         for i in cursor:
-            bot.send_message(int(i["_id"]), txt)
+            try:
+                bot.send_message(int(i["_id"]), txt)
+            except:
+                print(i)
+                continue
 
 
 @bot.message_handler(commands=["massmall"])
@@ -135,7 +140,25 @@ def massmall(message):
         cursor = users.find({})
         for i in cursor:
             if int(i["small"]) == 1:
-                bot.send_message(int(i["_id"]), txt)
+                try:
+                    bot.send_message(int(i["_id"]), txt)
+                except:
+                    print(i)
+                    continue
+
+
+@bot.message_handler(content_types=["photo"])
+def papuga(message):
+    if str(message.from_user.id) == utils.admin_id:
+        bot.send_photo(-1001477733398, message.photo[-1].file_id)
+        papug.insert_one({"_id": message.photo[-1].file_id})
+
+
+@bot.message_handler(commands=["papuga"])
+def ppuga(message):
+    for i in papug.aggregate([{"$sample": {"size": 1}}]):
+        id = i["_id"]
+        bot.send_photo(message.chat.id, id)
 
 
 @bot.callback_query_handler(lambda query: "small" in query.data)
