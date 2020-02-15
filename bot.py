@@ -90,6 +90,7 @@ def smallq(call):
 
 
 # ADMIN
+#
 @bot.message_handler(commands=["ban"])
 def ban(message):
     if str(message.from_user.id) == utils_global.admin_id:
@@ -185,6 +186,14 @@ def massmall(message):
                     continue
 
 
+@bot.message_handler(commands=["masstest"])
+def masstest(message):
+    if str(message.from_user.id) == utils_global.admin_id:
+        argument = extract_arg(message.text)
+        txt = " ".join(argument)
+        bot.send_message(utils_global.admin_id, txt, parse_mode="markdown")
+
+
 @bot.message_handler(content_types=["photo"])
 def papuga(message):
     if (
@@ -202,8 +211,7 @@ def papuga(message):
 
 
 #
-#
-#
+# ADMIN
 
 
 if heroku_check():
