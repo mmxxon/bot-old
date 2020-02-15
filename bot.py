@@ -14,7 +14,6 @@ bot = telebot.AsyncTeleBot(TOKEN)
 @bot.message_handler(commands=["start"])
 def start(message):
     if message.chat.type == "private":
-        utils.log(message)
         is_user = users.find_one({"_id": message.from_user.id})
         if str(is_user) == "None":
             users.insert_one(
@@ -49,6 +48,7 @@ def start(message):
                     "Вы уже подписаны на обновления бота",
                     reply_markup=data,
                 )
+        utils.log(message)
     else:
         bot.reply_to(message, "Works only in private chats")
 
