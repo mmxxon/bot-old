@@ -153,7 +153,7 @@ def papuga(message):
         str(message.from_user.id) == utils.admin_id
         or str(message.from_user.id) == kat
     ):
-        find = papug.find_one({"_id: message.photo[-1].file_id"})
+        find = papug.find_one({"_id": message.photo[-1].file_id})
         if str(find) == "None":
             bot.send_photo(-1001477733398, message.photo[-1].file_id)
             papug.insert_one({"_id": message.photo[-1].file_id})
