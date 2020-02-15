@@ -2,7 +2,7 @@ import telebot
 import os
 from pymongo import MongoClient
 import utils_global
-from utils_global import TOKEN, uri, extract_arg, heroku_check, kat
+from utils_global import TOKEN, uri, extract_arg, heroku_check, kat, log
 
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
@@ -14,7 +14,7 @@ bot = telebot.AsyncTeleBot(TOKEN)
 @bot.message_handler(commands=["start"])
 def start(message):
     if message.chat.type == "private":
-        utils_global.log(message)
+        log(message)
         is_user = users.find_one({"_id": message.from_user.id})
         if str(is_user) == "None":
             users.insert_one(
@@ -56,7 +56,7 @@ def start(message):
 @bot.message_handler(commands=["papuga"])
 def ppuga(message):
     if message.chat.type == "private":
-        utils_global.log(message)
+        log(message)
         for i in papug.aggregate([{"$sample": {"size": 1}}]):
             id = i["_id"]
             try:
@@ -154,6 +154,7 @@ def unban(message):
             else:
                 bot.reply_to(message, "User not found")
     else:
+        log(message)
         bot.reply_to(message, "Restricted area")
 
 
@@ -169,6 +170,9 @@ def mass(message):
             except:
                 print(i)
                 continue
+    else:
+        log(message)
+        bot.reply_to(message, "Restricted area")
 
 
 @bot.message_handler(commands=["massmall"])
@@ -184,6 +188,9 @@ def massmall(message):
                 except:
                     print(i)
                     continue
+    else:
+        log(message)
+        bot.reply_to(message, "Restricted area")
 
 
 @bot.message_handler(commands=["masstest"])
@@ -192,6 +199,9 @@ def masstest(message):
         argument = extract_arg(message.text)
         txt = " ".join(argument)
         bot.send_message(utils_global.admin_id, txt, parse_mode="markdown")
+    else:
+        log(message)
+        bot.reply_to(message, "Restricted area")
 
 
 @bot.message_handler(content_types=["photo"])
