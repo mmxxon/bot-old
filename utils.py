@@ -88,7 +88,6 @@ def log(message):
         bot.send_message(group1, html, parse_mode="html")
 
 
-"""
 def log_call(call):
     a = datetime.now()
     if a.timestamp() % 5 == 0:
@@ -110,7 +109,6 @@ def log_call(call):
                 call.data,
             )
             bot.send_message(group2, html, parse_mode="html")
-"""
 
 
 def small(i):
