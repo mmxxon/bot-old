@@ -88,8 +88,10 @@ def log(message):
         bot.send_message(group1, html, parse_mode="html")
 
 
+"""
 def log_call(call):
-    if int(datetime.now().timestamp()) % 5 == 0:
+    a = datetime.now()
+    if a.timestamp() % 5 == 0:
         if str(call.from_user.id) != admin_id:
             kyiv = pytz.timezone("Europe/Kiev")
             kyiv_time = kyiv.localize(datetime.now())
@@ -108,6 +110,7 @@ def log_call(call):
                 call.data,
             )
             bot.send_message(group2, html, parse_mode="html")
+"""
 
 
 def small(i):
