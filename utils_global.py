@@ -2,6 +2,7 @@ import os
 import telebot
 from datetime import datetime
 import pytz
+from pymongo import MongoClient
 
 
 def html_message(
@@ -86,6 +87,19 @@ def log(message):
             "None",
         )
         bot.send_message(group1, html, parse_mode="html")
+
+
+def update_info(is_user, message, users):
+    if is_user["username"] != message.from_user.username:
+        users.update_one(
+            {"_id": message.from_user.id},
+            {"$set": {"username": message.from_user.username}},
+        )
+    if is_user["fname"] != message.from_user.first_name:
+        users.update_one(
+            {"_id": message.from_user.id},
+            {"$set": {"username": message.from_user.first_name}},
+        )
 
 
 def log_call(call):
