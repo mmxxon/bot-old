@@ -166,7 +166,7 @@ def mass(message):
         cursor = users.find({})
         for i in cursor:
             try:
-                bot.send_message(int(i["_id"]), txt)
+                bot.send_message(int(i["_id"]), txt, parse_mode="markdown")
             except:
                 print(i)
                 continue
@@ -184,7 +184,7 @@ def massmall(message):
         for i in cursor:
             if int(i["small"]) == 1:
                 try:
-                    bot.send_message(int(i["_id"]), txt)
+                    bot.send_message(int(i["_id"]), txt, parse_mode="markdown")
                 except:
                     print(i)
                     continue
