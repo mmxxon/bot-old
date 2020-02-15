@@ -2,7 +2,7 @@ import telebot
 import os
 from pymongo import MongoClient
 import utils
-from utils import TOKEN, uri, extract_arg, heroku_check, kat
+from utils import TOKEN, uri, bot_id, extract_arg, heroku_check, kat
 
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
@@ -48,7 +48,6 @@ def start(message):
                     "Вы уже подписаны на обновления бота",
                     reply_markup=data,
                 )
-        utils.log(message)
     else:
         bot.reply_to(message, "Works only in private chats")
 
@@ -167,7 +166,6 @@ def papuga(message):
 @bot.message_handler(commands=["papuga"])
 def ppuga(message):
     if message.chat.type == "private":
-        utils.log(message)
         for i in papug.aggregate([{"$sample": {"size": 1}}]):
             id = i["_id"]
             try:
