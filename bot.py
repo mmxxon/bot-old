@@ -160,9 +160,7 @@ def papuga(message):
         else:
             papug.delete_one({"_id": message.photo[-1].file_id})
             bot.send_photo(-1001477733398, message.photo[-1].file_id)
-            bot.send_message(
-                chat_id=-1001477733398, text="deleted",
-            )
+            bot.send_message(chat_id=-1001477733398, text="deleted")
 
 
 @bot.message_handler(commands=["papuga"])
