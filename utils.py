@@ -1,6 +1,6 @@
 import os
 import telebot
-import datetime
+from datetime import datetime
 import pytz
 
 
