@@ -2,8 +2,7 @@ import telebot
 import os
 from pymongo import MongoClient
 import utils
-from utils import TOKEN, uri, bot_id, extract_arg, heroku_check, kat
-import datetime
+from utils import TOKEN, uri, extract_arg, heroku_check, kat
 
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
@@ -15,7 +14,7 @@ bot = telebot.AsyncTeleBot(TOKEN)
 @bot.message_handler(commands=["start"])
 def start(message):
     if message.chat.type == "private":
-        utils.log(message)
+        # utils.log(message)
         is_user = users.find_one({"_id": message.from_user.id})
         if str(is_user) == "None":
             users.insert_one(

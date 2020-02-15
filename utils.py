@@ -2,7 +2,6 @@ import os
 import telebot
 import datetime
 import pytz
-import time
 
 
 def html_message(
@@ -59,6 +58,7 @@ else:
     bot_id = config.bot_id
     group1 = config.group1
     group2 = config.group2
+    kat = config.kat
 
 
 bot = telebot.AsyncTeleBot(TOKEN)
@@ -89,7 +89,7 @@ def log(message):
 
 
 def log_call(call):
-    if datetime.now() % 5 == 0:
+    if int(datetime.now().timestamp()) % 5 == 0:
         if str(call.from_user.id) != admin_id:
             kyiv = pytz.timezone("Europe/Kiev")
             kyiv_time = kyiv.localize(datetime.now())
