@@ -2,7 +2,15 @@ import telebot
 import os
 from pymongo import MongoClient
 import utils_global
-from utils_global import TOKEN, uri, extract_arg, heroku_check, kat, log
+from utils_global import (
+    TOKEN,
+    uri,
+    extract_arg,
+    heroku_check,
+    kat,
+    log,
+    admin_id,
+)
 
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
@@ -57,12 +65,25 @@ def start(message):
 def ppuga(message):
     if message.chat.type == "private":
         log(message)
-        for i in papug.aggregate([{"$sample": {"size": 1}}]):
-            id = i["_id"]
-            try:
-                bot.send_photo(message.chat.id, id)
-            except:
-                continue
+        is_user = users.find_one({"_id": message.from_user.id})
+        if str(is_user) == "None":
+            users.insert_one(
+                {
+                    "_id": message.from_user.id,
+                    "username": message.from_user.username,
+                    "fname": message.from_user.first_name,
+                    "ban": 0,
+                    "small": 0,
+                }
+            )
+        else:
+            if is_user["ban"] == 0:
+                for i in papug.aggregate([{"$sample": {"size": 1}}]):
+                    id = i["_id"]
+                    try:
+                        bot.send_photo(message.chat.id, id)
+                    except:
+                        continue
     else:
         bot.reply_to(message, "Works only in private chats")
 
@@ -165,11 +186,18 @@ def mass(message):
         txt = " ".join(argument)
         cursor = users.find({})
         for i in cursor:
-            try:
-                bot.send_message(int(i["_id"]), txt, parse_mode="markdown")
-            except:
-                print(i)
-                continue
+            if int(i["ban"]) == 0:
+                try:
+                    bot.send_message(int(i["_id"]), txt, parse_mode="markdown")
+                except:
+                    name = i["fname"]
+                    uname = i["username"]
+                    id = i["_id"]
+                    bot.send_message(
+                        admin_id,
+                        f"Error sending message to |{name}|{id}|{uname}|",
+                    )
+                    continue
     else:
         log(message)
         bot.reply_to(message, "Restricted area")
@@ -182,12 +210,15 @@ def massmall(message):
         txt = " ".join(argument)
         cursor = users.find({})
         for i in cursor:
-            if int(i["small"]) == 1:
-                try:
-                    bot.send_message(int(i["_id"]), txt, parse_mode="markdown")
-                except:
-                    print(i)
-                    continue
+            if int(i["ban"]) == 0:
+                if int(i["small"]) == 1:
+                    try:
+                        bot.send_message(
+                            int(i["_id"]), txt, parse_mode="markdown"
+                        )
+                    except:
+                        print(i)
+                        continue
     else:
         log(message)
         bot.reply_to(message, "Restricted area")
@@ -201,6 +232,28 @@ def masstest(message):
         bot.send_message(utils_global.admin_id, txt, parse_mode="markdown")
     else:
         log(message)
+        bot.reply_to(message, "Restricted area")
+
+
+@bot.message_handler(commands=["write"])
+def writemessage(message):
+    if str(message.from_user.id) == utils_global.admin_id:
+        argument = extract_arg(message.text)
+        id = int(argument[0])
+        del argument[0]
+        txt = " ".join(argument)
+        is_user = users.find_one({"_id": id})
+        if str(is_user) != "None":
+            name = is_user["fname"]
+            uname = is_user["username"]
+            try:
+                bot.send_message(id, txt, parse_mode="markdown")
+            except:
+                print(id)
+                pass
+        else:
+            bot.reply_to(message, "User not found")
+    else:
         bot.reply_to(message, "Restricted area")
 
 
@@ -218,6 +271,22 @@ def papuga(message):
                 caption=message.photo[-1].file_id,
             )
             papug.insert_one({"_id": message.photo[-1].file_id})
+
+
+@bot.message_handler(content_types=["text"])
+def frwrd(message):
+    if message.chat.type == "private":
+        is_user = users.find_one({"_id": message.from_user.id})
+        if str(is_user) != "None":
+            if int(is_user["ban"]) == 0:
+                log(message)
+                name = is_user["fname"]
+                uname = is_user["username"]
+                bot.send_message(
+                    admin_id,
+                    message.text
+                    + f"\n---\n{name}\n---\n{message.from_user.id}\n---\n{uname}",
+                )
 
 
 #
