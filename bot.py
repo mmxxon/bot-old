@@ -2,7 +2,7 @@ import telebot
 import os
 from pymongo import MongoClient
 import utils
-from utils import TOKEN, uri, bot_id, extract_arg, heroku_check
+from utils import TOKEN, uri, bot_id, extract_arg, heroku_check, kat
 
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
@@ -149,7 +149,10 @@ def massmall(message):
 
 @bot.message_handler(content_types=["photo"])
 def papuga(message):
-    if str(message.from_user.id) == utils.admin_id:
+    if (
+        str(message.from_user.id) == utils.admin_id
+        or str(message.from_user.id) == kat
+    ):
         bot.send_photo(-1001477733398, message.photo[-1].file_id)
         papug.insert_one({"_id": message.photo[-1].file_id})
 
