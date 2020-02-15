@@ -15,7 +15,7 @@ if heroku_check():
     admin_id = os.environ["ID"]
     uri = os.environ["MONGODB_URI"]
     bot_id = os.environ["BOT_ID"]
-    kat = os.environ["BOT_ID"]
+    kat = os.environ["Kat"]
 else:
     import config
 
