@@ -1,4 +1,5 @@
 import telebot
+import requests
 import os
 from pymongo import MongoClient
 import utils_global
@@ -16,7 +17,7 @@ myclient = MongoClient(uri)
 mydb = myclient["userdb"]
 users = mydb["users"]
 papug = mydb["papug"]
-bot = telebot.AsyncTeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN)
 
 
 @bot.message_handler(commands=["start"])
@@ -79,7 +80,7 @@ def ppuga(message):
         else:
             if is_user["ban"] == 0:
                 for i in papug.aggregate([{"$sample": {"size": 1}}]):
-                    id = i["_id"]
+                    id = i["id2"]
                     try:
                         bot.send_photo(message.chat.id, id)
                     except:
@@ -239,13 +240,12 @@ def masstest(message):
 def writemessage(message):
     if str(message.from_user.id) == utils_global.admin_id:
         argument = extract_arg(message.text)
-        id = int(argument[0])
+        usr = int(argument[0])
         del argument[0]
         txt = " ".join(argument)
-        is_user = users.find_one({"_id": id})
+        is_user = users.find_one({"_id": usr})
         if str(is_user) != "None":
-            name = is_user["fname"]
-            uname = is_user["username"]
+
             try:
                 bot.send_message(id, txt, parse_mode="markdown")
             except:
@@ -263,14 +263,17 @@ def papuga(message):
         str(message.from_user.id) == utils_global.admin_id
         or str(message.from_user.id) == kat
     ):
-        find = papug.find_one({"_id": message.photo[-1].file_id})
+        file_id = message.photo[-1].file_id
+        response = requests.get(
+            f"https://api.telegram.org/bot{TOKEN}/getFile?file_id={file_id}"
+        )
+        unique = response.json()["result"]["file_unique_id"]
+        find = papug.find_one({"_id": str(unique)})
         if str(find) == "None":
             bot.send_photo(
-                -1001477733398,
-                message.photo[-1].file_id,
-                caption=message.photo[-1].file_id,
+                -1001477733398, file_id, file_id,
             )
-            papug.insert_one({"_id": message.photo[-1].file_id})
+            papug.insert_one({"_id": str(unique), "id2": str(file_id)})
 
 
 @bot.message_handler(content_types=["text"])
