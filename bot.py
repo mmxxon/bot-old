@@ -92,7 +92,6 @@ def smallq(call):
 # ADMIN
 @bot.message_handler(commands=["ban"])
 def ban(message):
-    utils_global.log(message)
     if str(message.from_user.id) == utils_global.admin_id:
         argument = extract_arg(message.text)
         for i in argument:
@@ -126,7 +125,6 @@ def ban(message):
 
 @bot.message_handler(commands=["unban"])
 def unban(message):
-    utils_global.log(message)
     if str(message.from_user.id) == utils_global.admin_id:
         argument = extract_arg(message.text)
         for i in argument:
