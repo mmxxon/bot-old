@@ -15,6 +15,7 @@ bot = telebot.AsyncTeleBot(TOKEN)
 @bot.message_handler(commands=["start"])
 def start(message):
     if message.chat.type == "private":
+        utils.log(message)
         is_user = users.find_one({"_id": message.from_user.id})
         if str(is_user) == "None":
             users.insert_one(
@@ -167,6 +168,7 @@ def papuga(message):
 @bot.message_handler(commands=["papuga"])
 def ppuga(message):
     if message.chat.type == "private":
+        utils.log(message)
         for i in papug.aggregate([{"$sample": {"size": 1}}]):
             id = i["_id"]
             try:
