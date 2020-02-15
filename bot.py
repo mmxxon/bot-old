@@ -285,7 +285,7 @@ def frwrd(message):
                 bot.send_message(
                     admin_id,
                     message.text
-                    + f"\n---\n{name}\n---\n{message.from_user.id}\n---\n{uname}",
+                    + f"\nName:{name}\nId:{message.from_user.id}\nUsername:{uname}",
                 )
 
 
