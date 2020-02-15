@@ -166,12 +166,15 @@ def papuga(message):
 
 @bot.message_handler(commands=["papuga"])
 def ppuga(message):
-    for i in papug.aggregate([{"$sample": {"size": 1}}]):
-        id = i["_id"]
-        try:
-            bot.send_photo(message.chat.id, id)
-        except:
-            continue
+    if message.chat.type == "private":
+        for i in papug.aggregate([{"$sample": {"size": 1}}]):
+            id = i["_id"]
+            try:
+                bot.send_photo(message.chat.id, id)
+            except:
+                continue
+    else:
+        bot.reply_to(message, "Works only in private chats")
 
 
 @bot.callback_query_handler(lambda query: "small" in query.data)
