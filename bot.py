@@ -161,7 +161,10 @@ def papuga(message):
 def ppuga(message):
     for i in papug.aggregate([{"$sample": {"size": 1}}]):
         id = i["_id"]
-        bot.send_photo(message.chat.id, id)
+        try:
+            bot.send_photo(message.chat.id, id)
+        except:
+            continue
 
 
 @bot.callback_query_handler(lambda query: "small" in query.data)
