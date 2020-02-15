@@ -156,10 +156,10 @@ def papuga(message):
     ):
         find = papug.find_one({"_id": message.photo[-1].file_id})
         if str(find) == "None":
-            bot.send_photo(-1001477733398, message.photo[-1].file_id)
-            bot.send_message(
-                chat_id=-1001477733398,
-                text="ID" + str(message.photo[-1].file_id),
+            bot.send_photo(
+                -1001477733398,
+                message.photo[-1].file_id,
+                caption=message.photo[-1].file_id,
             )
             papug.insert_one({"_id": message.photo[-1].file_id})
 
