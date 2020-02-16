@@ -354,7 +354,14 @@ def fieldbegin(call):
         )
         find = dbmine.find_one({"_id": call.message.chat.id})
         if str(find) == "None":
-            user = {"message": mid, "_id": cid, "size": size, "field": field}
+            user = {
+                "message": mid,
+                "_id": cid,
+                "size": size,
+                "field": field,
+                "won": 0,
+                "lost": 0,
+            }
             dbmine.insert_one(user)
         log_call(call)
 
