@@ -3,21 +3,18 @@ import requests
 import os
 from pymongo import MongoClient
 import utils_global
-from utils_global import (
-    TOKEN,
-    uri,
-    extract_arg,
-    heroku_check,
-    kat,
-    log,
-    admin_id,
-)
+from utils_global import heroku_check, log, extract_arg
+
+TOKEN = utils_global.TOKEN
+uri = utils_global.uri
+kat = utils_global.kat
+admin_id = utils_global.admin_id
 
 myclient = MongoClient(uri)
 mydb = myclient["userdb"]
 users = mydb["users"]
 papug = mydb["papug"]
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.AsyncTeleBot(TOKEN)
 
 
 @bot.message_handler(commands=["start"])
@@ -37,18 +34,17 @@ def start(message):
             )
             key = utils_global.small(1)
             bot.reply_to(message, utils_global.txtstart, reply_markup=key)
-        else:
-            if is_user["ban"] == 0:
-                utils_global.update_info(is_user, message, users)
-                if is_user["small"] == 0:
-                    data = utils_global.small(1)
-                else:
-                    data = utils_global.small(0)
-                bot.reply_to(
-                    message,
-                    "Вы уже подписаны на обновления бота",
-                    reply_markup=data,
-                )
+        elif is_user["ban"] == 0:
+            utils_global.update_info(is_user, message, users)
+            if is_user["small"] == 0:
+                data = utils_global.small(1)
+            else:
+                data = utils_global.small(0)
+            bot.reply_to(
+                message,
+                "Вы уже подписаны на обновления бота",
+                reply_markup=data,
+            )
     else:
         bot.reply_to(message, "Works only in private chats")
 
@@ -56,7 +52,6 @@ def start(message):
 @bot.message_handler(commands=["papuga"])
 def ppuga(message):
     if message.chat.type == "private":
-        log(message)
         is_user = users.find_one({"_id": message.from_user.id})
         if str(is_user) == "None":
             users.insert_one(
@@ -68,24 +63,16 @@ def ppuga(message):
                     "small": 0,
                 }
             )
-        else:
-            if is_user["ban"] == 0:
-                for i in papug.aggregate([{"$sample": {"size": 1}}]):
-                    id = i["id2"]
-                    try:
-                        bot.send_photo(message.chat.id, id)
-                    except:
-                        continue
+        elif is_user["ban"] == 0:
+            log(message)
+            for i in papug.aggregate([{"$sample": {"size": 1}}]):
+                id = i["id2"]
+                try:
+                    bot.send_photo(message.chat.id, id)
+                except:
+                    continue
     else:
         bot.reply_to(message, "Works only in private chats")
-
-
-"""
-@bot.message_handler(commands=["minesweeper"])
-def size_menu1(message):
-    is_user = users.find_one({"_id": usr})
-    if str(is_user) != "None":
-"""
 
 
 @bot.callback_query_handler(lambda query: "small" in query.data)
@@ -183,15 +170,12 @@ def massmall(message):
         txt = " ".join(argument)
         cursor = users.find({})
         for i in cursor:
-            if int(i["ban"]) == 0:
-                if int(i["small"]) == 1:
-                    try:
-                        bot.send_message(
-                            int(i["_id"]), txt, parse_mode="markdown"
-                        )
-                    except:
-                        print(i)
-                        continue
+            if int(i["ban"]) == 0 and int(i["small"]) == 1:
+                try:
+                    bot.send_message(int(i["_id"]), txt, parse_mode="markdown")
+                except:
+                    print(i)
+                    continue
     else:
         log(message)
         bot.reply_to(message, "Restricted area")
@@ -266,6 +250,9 @@ def frwrd(message):
 
 #
 # ADMIN
+# -----
+# minesweeper
+#
 
 
 if heroku_check():
