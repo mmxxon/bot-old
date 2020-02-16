@@ -33,6 +33,8 @@ def start(message):
                 "fname": message.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
         key = utils_global.small(1)
@@ -65,6 +67,8 @@ def ppuga(message):
                 "fname": message.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     elif is_user["ban"] == 0:
@@ -254,6 +258,8 @@ def minestart(message):
                 "fname": message.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": message.chat.id})
@@ -321,6 +327,8 @@ def fieldbegin(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -359,8 +367,6 @@ def fieldbegin(call):
                 "_id": cid,
                 "size": size,
                 "field": field,
-                "won": 0,
-                "lost": 0,
             }
             dbmine.insert_one(user)
         log_call(call)
@@ -377,6 +383,8 @@ def mark_on(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -395,8 +403,6 @@ def mark_on(call):
                 reply_markup=keyboard,
             )
 
-            # log_call(call)
-
 
 @bot.callback_query_handler(lambda query: query.data == "mark-")
 def mark_off(call):
@@ -409,6 +415,8 @@ def mark_off(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -426,7 +434,6 @@ def mark_off(call):
                 text="Чтобы переключиться между режимом флажков🚩 и обычным💣 нажми кнопку внизу",
                 reply_markup=keyboard,
             )
-            # log_call(call)
 
 
 @bot.callback_query_handler(lambda query: "m+" in query.data)
@@ -440,6 +447,8 @@ def markplus(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -475,6 +484,8 @@ def fieldgame(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -574,6 +585,8 @@ def markminus(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -609,6 +622,8 @@ def prev_game(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     if is_user["ban"] == 0:
@@ -629,7 +644,6 @@ def prev_game(call):
             text="Чтобы переключиться между режимом флажков и обычным нажми кнопку внизу",
             reply_markup=keyboard,
         )
-        log_call(call)
 
 
 @bot.callback_query_handler(lambda query: query.data == "newgame")
@@ -643,10 +657,13 @@ def new_game(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        log_call(call)
         if is_user["ban"] == 0:
             dbmine.delete_one({"_id": call.from_user.id})
             utils_mines.start_menu(call.message)
@@ -663,6 +680,8 @@ def okay(call):
                 "fname": call.message.chat.first_name,
                 "ban": 0,
                 "small": 0,
+                "won": 0,
+                "lost": 0,
             }
         )
     bot.answer_callback_query(call.id, "Done")
