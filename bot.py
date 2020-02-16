@@ -258,6 +258,7 @@ def minestart(message):
         )
     is_user = users.find_one({"_id": message.chat.id})
     if is_user["ban"] == 0:
+        log(message)
         if message.chat.type == "private":
             utils_global.update_info(is_user, message, users)
             find = dbmine.find_one({"_id": message.chat.id})
