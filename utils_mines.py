@@ -32,11 +32,11 @@ def start_menu(message):
         choice.row(button3, button4)  # RETURN "S"
         if str(message.from_user.id) != bot_id:
             bot.send_message(
-                message.chat.id, "Choose size:", reply_markup=choice
+                message.chat.id, "Выбери размер поля🗺", reply_markup=choice
             )
         else:
             bot.edit_message_text(
-                "Choose size:",
+                "Выбери размер поля🗺",
                 message.chat.id,
                 message.message_id,
                 reply_markup=choice,
