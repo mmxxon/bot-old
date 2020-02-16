@@ -3,6 +3,7 @@ import telebot
 from datetime import datetime
 import pytz
 from pymongo import MongoClient
+import time
 
 
 def html_message(
@@ -65,6 +66,19 @@ else:
 bot = telebot.AsyncTeleBot(TOKEN)
 
 
+def update_info(is_user, message, users):
+    if is_user["username"] != message.from_user.username:
+        users.update_one(
+            {"_id": message.from_user.id},
+            {"$set": {"username": message.from_user.username}},
+        )
+    if is_user["fname"] != message.from_user.first_name:
+        users.update_one(
+            {"_id": message.from_user.id},
+            {"$set": {"username": message.from_user.first_name}},
+        )
+
+
 def log(message):
     if (
         str(message.from_user.id) != bot_id
@@ -89,40 +103,26 @@ def log(message):
         bot.send_message(group1, html, parse_mode="html")
 
 
-def update_info(is_user, message, users):
-    if is_user["username"] != message.from_user.username:
-        users.update_one(
-            {"_id": message.from_user.id},
-            {"$set": {"username": message.from_user.username}},
-        )
-    if is_user["fname"] != message.from_user.first_name:
-        users.update_one(
-            {"_id": message.from_user.id},
-            {"$set": {"username": message.from_user.first_name}},
-        )
-
-
 def log_call(call):
-    a = datetime.now()
-    if a.timestamp() % 5 == 0:
-        if str(call.from_user.id) != admin_id:
-            kyiv = pytz.timezone("Europe/Kiev")
-            kyiv_time = kyiv.localize(datetime.now())
-            timen = kyiv_time.strftime("%d %B %Y %H:%M:%S")
-            html = html_message(
-                timen,
-                "CALL",
-                call.message.chat.type,
-                call.message.chat.id,
-                call.message.chat.username,
-                call.from_user.first_name,
-                call.from_user.last_name,
-                call.from_user.username,
-                call.from_user.id,
-                call.message.text,
-                call.data,
-            )
-            bot.send_message(group2, html, parse_mode="html")
+    if str(call.from_user.id) != admin_id:
+        kyiv = pytz.timezone("Europe/Kiev")
+        kyiv_time = kyiv.localize(datetime.now())
+        timen = kyiv_time.strftime("%d %B %Y %H:%M:%S")
+        time.sleep(0.1)
+        html = html_message(
+            timen,
+            "CALL",
+            call.message.chat.type,
+            call.message.chat.id,
+            call.message.chat.username,
+            call.from_user.first_name,
+            call.from_user.last_name,
+            call.from_user.username,
+            call.from_user.id,
+            call.message.text,
+            call.data,
+        )
+        bot.send_message(group2, html, parse_mode="html")
 
 
 def small(i):
@@ -136,9 +136,12 @@ def small(i):
     return telebot.types.InlineKeyboardMarkup().row(button)
 
 
+# argument calls
 def extract_arg(arg):
     return arg.split()[1:]
 
+
+#
 
 # vars
 txtstart = "Вы подписались на бота. Все крупные обновления будут сопровождаться оповещениями (не чаще раза в неделю). По кнопке ниже можно подписаться и на сообщения о небольших фиксах (не чаще раза в день)"

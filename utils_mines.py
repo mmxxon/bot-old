@@ -3,7 +3,7 @@ import telebot
 from telebot import types
 import utils_global
 from pymongo import MongoClient
-from utils_global import log, extract_arg
+from utils_global import extract_arg
 
 TOKEN = utils_global.TOKEN
 uri = utils_global.uri
@@ -20,18 +20,16 @@ bot = telebot.AsyncTeleBot(TOKEN)
 
 
 def start_menu(message):
-    if str(message.chat.id) != admin_id:
-        log(message)
-    find = dbmine.find_one({"user": message.from_user.id})
+    find = dbmine.find_one({"_id": message.chat.id})
     if str(find) == "None":
-        # Buttons w sizes. Return 's' + choice
+        # Buttons w sizes.
         choice = types.InlineKeyboardMarkup()
         button1 = types.InlineKeyboardButton(text="5", callback_data="s5")
         button2 = types.InlineKeyboardButton(text="6", callback_data="s6")
         choice.row(button1, button2)
         button3 = types.InlineKeyboardButton(text="7", callback_data="s7")
         button4 = types.InlineKeyboardButton(text="8", callback_data="s8")
-        choice.row(button3, button4)
+        choice.row(button3, button4)  # RETURN "S"
         if str(message.from_user.id) != bot_id:
             bot.send_message(
                 message.chat.id, "Choose size:", reply_markup=choice
@@ -46,10 +44,12 @@ def start_menu(message):
     else:
         choice = types.InlineKeyboardMarkup()
         button1 = types.InlineKeyboardButton(
-            text="Доиграть прошлую игру", callback_data="prevgame",
+            text="Доиграть прошлую игру",
+            callback_data="prevgame",  # RETURN "Prevgame"
         )
         button2 = types.InlineKeyboardButton(
-            text="Начать новую игру", callback_data="newgame"
+            text="Начать новую игру",
+            callback_data="newgame",  # RETURN "NEWGAME"
         )
         choice.row(button1, button2)
         bot.send_message(
@@ -86,7 +86,6 @@ def minec(field, size, n, m):
     if m != 0:
         if field[c - 1]["is_mine"] == 1:
             cmine += 1
-    print("cmine=", cmine)
     return cmine
 
 
