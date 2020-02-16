@@ -108,7 +108,7 @@ def log_call(call):
         kyiv = pytz.timezone("Europe/Kiev")
         kyiv_time = kyiv.localize(datetime.now())
         timen = kyiv_time.strftime("%d %B %Y %H:%M:%S")
-        time.sleep(0.1)
+        time.sleep(2)
         html = html_message(
             timen,
             "CALL",
