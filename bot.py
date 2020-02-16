@@ -474,7 +474,7 @@ def fieldgame(call):
         find = dbmine.find_one({"_id": call.message.chat.id})
         if call.message.message_id != find["message"]:
             bot.edit_message_text(
-                "Use last message from chat or run /minesweeper to play",
+                "Use last game from chat or run /minesweeper to play",
                 call.message.chat.id,
                 call.message.message_id,
             )
