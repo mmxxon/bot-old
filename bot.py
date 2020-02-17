@@ -48,7 +48,7 @@ def start(message):
                 data = utils_global.small(0)
             bot.reply_to(
                 message,
-                "Вы уже подписаны на обновления бота",
+                "Вы уже подписаны на обновления бота\n\n<b>Бот может</b>:\n- Показать папужку: /papuga\n- Создать игру в сапёр /minesweeper\n- Показать статистику из сапера /stats\n- (Новое скоро)",
                 reply_markup=data,
             )
             log(message)
