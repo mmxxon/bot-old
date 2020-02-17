@@ -209,9 +209,8 @@ def writemessage(message):
         txt = " ".join(argument)
         is_user = users.find_one({"_id": usr})
         if str(is_user) != "None":
-
             try:
-                bot.send_message(id, txt, parse_mode="markdown")
+                bot.send_message(usr, txt, parse_mode="markdown")
             except:
                 print(id)
                 pass
