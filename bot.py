@@ -343,7 +343,7 @@ def stats(message):
                 game.add(button)
                 bot.send_message(
                     message.chat.id,
-                    "Сыграй сначала хотя бы одну игру",
+                    "Сыграй сначала хотя бы одну игру🕹",
                     reply_markup=game,
                 )
             else:
