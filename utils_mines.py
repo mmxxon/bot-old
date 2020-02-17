@@ -333,7 +333,7 @@ def mark(size, field):
 def stattxt(name, won, lost, points):
     all = won + lost
     if won != 0 and lost != 0:
-        percent = int((float(all) / float(won)) * 100)
+        percent = int((float(won) / float(all)) * 100)
         middle = float(points) / float(all)
     elif won == 0:
         percent = 0
