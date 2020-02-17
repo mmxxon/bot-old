@@ -240,6 +240,29 @@ def papuga(message):
             papug.insert_one({"_id": str(unique), "id2": str(file_id)})
 
 
+@bot.message_handler(commands=["dlbase"])
+def dlbase(message):
+    if (
+        str(message.from_user.id) == utils_global.admin_id
+        or str(message.from_user.id) == kat
+    ):
+        argument = extract_arg(message.text)
+        file_id = str(argument[0])
+        response = requests.get(
+            f"https://api.telegram.org/bot{TOKEN}/getFile?file_id={file_id}"
+        )
+        unique = response.json()["result"]["file_unique_id"]
+        find = papug.find_one({"_id": str(unique)})
+        if str(find) != "None":
+            bot.send_photo(
+                message.chat.id, file_id, "deleted",
+            )
+            bot.send_photo(
+                utils_global.admin_id, file_id, "deleted",
+            )
+            papug.delete_one({"_id": str(unique)})
+
+
 #
 # ADMIN
 # -----
