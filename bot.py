@@ -779,7 +779,9 @@ def clstats2(call):
             {"$unset": {"lost": 1, "points": 1, "won": 1}},
         )
         bot.edit_message_text(
-            call.message.chat.id, call.message.message_id, text="OK"
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text="OK",
         )
 
 
