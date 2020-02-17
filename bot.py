@@ -772,10 +772,12 @@ def clstats2(call):
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
-        dbmine.update(
+        users.update_one(
             {"_id": call.message.chat.id},
-            {"$unset": {"lost": "", "points": "", "won": ""}},
+            {"$unset": {"lost": 1, "points": 1, "won": 1}},
         )
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+        bot.send_message(call.message.chat.id, "Clear")
 
 
 #
