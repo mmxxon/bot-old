@@ -344,7 +344,7 @@ def stattxt(name, won, lost, points):
         txt = "Зе бест👑"
     elif 80 > percent >= 60 and middle >= 3.6:
         txt = "Мощно💪"
-    elif 60 > percent >= 40 and middle >= 2.4:
+    elif 60 > percent >= 40 and middle >= 2:
         txt = "Хороший результат👍"
     else:
         txt = "Можешь лучше🔝"
@@ -354,6 +354,6 @@ def stattxt(name, won, lost, points):
         + f"\n<b>Поражений</b>: {lost}"
         + f"\n<b>Процентное соотношение</b>: {percent}%"
         + f"\n<b>Очков</b>: {points}"
-        + f"\n<b>В среднем очков за игру: {middle}"
+        + f"\n<b>В среднем очков за игру</b>: {middle}"
         + f"\n\n{txt}"
     )
