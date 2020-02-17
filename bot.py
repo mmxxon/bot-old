@@ -777,7 +777,7 @@ def clstats2(call):
             {"$unset": {"lost": 1, "points": 1, "won": 1}},
         )
         bot.delete_message(call.message.chat.id, call.message.message_id)
-        bot.send_message(call.message.chat.id, "Clear")
+        bot.send_message(call.message.chat.id, "OK")
 
 
 #
