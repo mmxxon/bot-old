@@ -238,7 +238,7 @@ def winreply(call, size, field):
     keyboard = endboard(size, field)
     bot.answer_callback_query(
         callback_query_id=call.id,
-        text=f"🏆Победа!🏆 +{size} очков",
+        text=f"🏆Победа! +{size} очков🏆",
         show_alert=1,
     )
     users.update_one(
