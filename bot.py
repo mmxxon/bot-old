@@ -36,7 +36,9 @@ def start(message):
             }
         )
         key = utils_global.small(1)
-        bot.reply_to(message, utils_global.txtstart, reply_markup=key)
+        bot.reply_to(
+            message, utils_global.txtstart, reply_markup=key, parse_mode="html"
+        )
     elif is_user["ban"] == 0:
         if message.chat.type == "private":
             utils_global.update_info(is_user, message, users)
