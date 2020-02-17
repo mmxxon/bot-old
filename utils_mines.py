@@ -239,6 +239,11 @@ def winreply(call, size, field):
     bot.answer_callback_query(
         callback_query_id=call.id, text="🏆Победа!🏆", show_alert=1,
     )
+    users.update_one(
+        {"_id": call.message.chat.id},
+        {"$inc": {"won": 1, "lost": 0, "points": size}},
+    )
+    dbmine.delete_one({"_id": call.message.chat.id})
     button = types.InlineKeyboardButton(
         text="Начать новую игру", callback_data="newgame"
     )
@@ -247,6 +252,31 @@ def winreply(call, size, field):
     mid = call.message.message_id
     bot.edit_message_text(
         chat_id=cid, message_id=mid, text="🏆Победа!🏆", reply_markup=keyboard,
+    )
+
+
+def lostreply(call, size, field):
+    keyboard = endboard(size, field)
+    bot.answer_callback_query(
+        callback_query_id=call.id, text="Попробуй еще раз🕹", show_alert=1,
+    )
+    users.update_one(
+        {"_id": call.message.chat.id},
+        {"$inc": {"won": 0, "lost": 1, "points": 0}},
+    )
+    dbmine.delete_one({"_id": call.message.chat.id})
+    button = types.InlineKeyboardButton(
+        text="Начать новую игру", callback_data="newgame"
+    )
+    keyboard.row(button)
+    cid = call.message.chat.id
+    mid = call.message.message_id
+
+    bot.edit_message_text(
+        chat_id=cid,
+        message_id=mid,
+        text="Попробуй еще раз🕹",
+        reply_markup=keyboard,
     )
 
 
@@ -296,3 +326,34 @@ def mark(size, field):
     )
     keyboard.row(button)
     return keyboard
+
+
+def stattxt(name, won, lost, points):
+    all = won + lost
+    if won != 0 and lost != 0:
+        percent = int((float(won) / float(lost)) * 100)
+        middle = int((float(points) / float(won)))
+    elif won == 0:
+        percent = 0
+        middle = 0
+    elif lost == 0:
+        middle = int((float(points) / float(won)))
+        percent = 100
+    if 100 >= percent >= 80 and middle >= 7:
+        txt = "Зе бест👑"
+    elif 80 > percent >= 60 and middle >= 6:
+        txt = "Мощно💪"
+    elif 60 > percent >= 40 and middle >= 6:
+        txt = "Хороший результат👍"
+    else:
+        txt = "Можешь лучше🔝"
+
+    return (
+        f"<b>Статистика для {name}</b>"
+        + f"\n<b>Побед</b>: {won}"
+        + f"\n<b>Поражений</b>: {lost}"
+        + f"\n<b>Процентное соотношение</b>: {percent}%"
+        + f"\n<b>Очков</b>: {points}"
+        + f"\n<b>В среднем очков за игру</b>: {middle}"
+        + f"\n\n{txt}"
+    )

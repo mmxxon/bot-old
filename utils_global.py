@@ -20,19 +20,19 @@ def html_message(
     data,
 ):
     return f"""
-    <b>NEW {textm}</b>
-    <b>TIME</b>: <code>{datetime}</code>
-    <b>CHAT</b>
-    - TYPE: <code>{ctype}</code>
-    - ID: <code>{str(cid)}</code>
-    - NAME: @{str(cusername)}
-    <b>USER</b>
-    - First: |<code>{name}</code>|
-    - Last:  |<code>{lname}</code>|
-    - Username: @{str(username)}
-    - ID: <code>{str(id)}</code>
-    MESSAGE TEXT: |<code>{text}</code>|
-    <b>CALL DATA</b>: |<code>{data}</code>|"""
+<b>NEW {textm}</b>
+<b>TIME</b>: <code>{datetime}</code>
+<b>CHAT</b>
+- TYPE: <code>{ctype}</code>
+- ID: <code>{str(cid)}</code>
+- NAME: @{str(cusername)}
+<b>USER</b>
+- First: |<code>{name}</code>|
+- Last:  |<code>{lname}</code>|
+- Username: @{str(username)}
+- ID: <code>{str(id)}</code>
+MESSAGE TEXT: |<code>{text}</code>|
+<b>CALL DATA</b>: |<code>{data}</code>|"""
 
 
 def heroku_check():

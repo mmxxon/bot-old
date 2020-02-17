@@ -33,8 +33,6 @@ def start(message):
                 "fname": message.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
         key = utils_global.small(1)
@@ -67,12 +65,11 @@ def ppuga(message):
                 "fname": message.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     elif is_user["ban"] == 0:
         if message.chat.type == "private":
+            utils_global.update_info(is_user, message, users)
             for i in papug.aggregate([{"$sample": {"size": 1}}]):
                 id = i["id2"]
                 try:
@@ -246,7 +243,7 @@ def papuga(message):
 # MINESWEEPER
 #
 
-
+# START
 @bot.message_handler(commands=["minesweeper"])
 def minestart(message):
     is_user = users.find_one({"_id": message.chat.id})
@@ -258,15 +255,13 @@ def minestart(message):
                 "fname": message.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": message.chat.id})
     if is_user["ban"] == 0:
-        log(message)
         if message.chat.type == "private":
             utils_global.update_info(is_user, message, users)
+            log(message)
             find = dbmine.find_one({"_id": message.chat.id})
             if str(find) == "None":
                 # Buttons w sizes.
@@ -318,6 +313,53 @@ def minestart(message):
             bot.reply_to(message, "Works only in private chats")
 
 
+# STATS
+@bot.message_handler(commands=["stats"])
+def stats(message):
+    is_user = users.find_one({"_id": message.chat.id})
+    if str(is_user) == "None":
+        utils_global.update_info(is_user, message, users)
+        users.insert_one(
+            {
+                "_id": message.chat.id,
+                "username": message.from_user.username,
+                "fname": message.from_user.first_name,
+                "ban": 0,
+                "small": 0,
+            }
+        )
+    is_user = users.find_one({"_id": message.chat.id})
+    if is_user["ban"] == 0:
+        if message.chat.type == "private":
+            is_played = users.find_one(
+                {"_id": message.chat.id, "won": {"$exists": "true"}}
+            )
+            if str(is_played) == "None":
+                game = types.InlineKeyboardMarkup()
+                button = types.InlineKeyboardButton(
+                    text="Начать игру", callback_data="newgame"
+                )
+                game.add(button)
+                bot.send_message(
+                    message.chat.id,
+                    "Сыграй сначала хотя бы одну игру",
+                    reply_markup=game,
+                )
+            else:
+                name = is_user["username"]
+                won = int(is_played["won"])
+                lost = int(is_played["lost"])
+                points = int(is_played["points"])
+                game = types.InlineKeyboardMarkup()
+                button = types.InlineKeyboardButton(
+                    text="Сыграть еще", callback_data="newgame"
+                )
+                txt = utils_mines.stattxt(name, won, lost, points)
+                game.add(button)
+                bot.send_message(message.chat.id, str(txt), parse_mode="html")
+
+
+# GENERATE FIELD
 @bot.callback_query_handler(lambda query: "s" in query.data)
 def fieldbegin(call):
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -329,12 +371,11 @@ def fieldbegin(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         # Takes size from callback
         size = int(call.data[1])
         field = utils_mines.empty_field(size)
@@ -385,12 +426,11 @@ def mark_on(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         find = dbmine.find_one({"_id": call.from_user.id})
         if str(find) != "None":
             field = find["field"]
@@ -406,75 +446,7 @@ def mark_on(call):
             )
 
 
-@bot.callback_query_handler(lambda query: query.data == "mark-")
-def mark_off(call):
-    is_user = users.find_one({"_id": call.message.chat.id})
-    if str(is_user) == "None":
-        users.insert_one(
-            {
-                "_id": call.message.chat.id,
-                "username": call.from_user.username,
-                "fname": call.from_user.first_name,
-                "ban": 0,
-                "small": 0,
-                "won": 0,
-                "lost": 0,
-            }
-        )
-    is_user = users.find_one({"_id": call.message.chat.id})
-    if is_user["ban"] == 0:
-        find = dbmine.find_one({"_id": call.from_user.id})
-        if str(find) != "None":
-            field = find["field"]
-            size = find["size"]
-            keyboard = utils_mines.board(size, field)
-            cid = call.message.chat.id
-            mid = call.message.message_id
-            bot.edit_message_text(
-                chat_id=cid,
-                message_id=mid,
-                text="Чтобы переключиться между режимом флажков🚩 и обычным💣 нажми кнопку внизу",
-                reply_markup=keyboard,
-            )
-
-
-@bot.callback_query_handler(lambda query: "m+" in query.data)
-def markplus(call):
-    is_user = users.find_one({"_id": call.message.chat.id})
-    if str(is_user) == "None":
-        users.insert_one(
-            {
-                "_id": call.message.chat.id,
-                "username": call.from_user.username,
-                "fname": call.from_user.first_name,
-                "ban": 0,
-                "small": 0,
-                "won": 0,
-                "lost": 0,
-            }
-        )
-    is_user = users.find_one({"_id": call.message.chat.id})
-    if is_user["ban"] == 0:
-        find = dbmine.find_one({"_id": call.message.chat.id})
-        if str(find) != "None":
-            size = int(call.data[2])
-            x = int(call.data[3])
-            y = int(call.data[4])
-            c = x * size + y
-            field = find["field"]
-            field[c]["is_marked"] = 1
-            dbmine.update_one(
-                {"_id": call.message.chat.id}, {"$set": {"field": field}},
-            )
-            keyboard = utils_mines.mark(size, field)
-            bot.edit_message_text(
-                "Чтобы переключиться между режимом флажков🚩 и обычным💣 нажми кнопку внизу",
-                call.message.chat.id,
-                call.message.message_id,
-                reply_markup=keyboard,
-            )
-
-
+# TAKE FIELDS
 @bot.callback_query_handler(lambda query: "z" in query.data)
 def fieldgame(call):
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -486,12 +458,11 @@ def fieldgame(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         find = dbmine.find_one({"_id": call.message.chat.id})
         if call.message.message_id != find["message"]:
             bot.edit_message_text(
@@ -510,25 +481,7 @@ def fieldgame(call):
                     field[x * size + y]["is_mine"] == 1
                     and field[x * size + y]["is_opened"] == 1
                 ):
-                    keyboard = utils_mines.endboard(size, field)
-                    bot.answer_callback_query(
-                        callback_query_id=call.id,
-                        text="Попробуй еще раз🕹",
-                        show_alert=1,
-                    )
-                    dbmine.delete_one({"_id": call.message.chat.id})
-                    button = types.InlineKeyboardButton(
-                        text="Начать новую игру", callback_data="newgame"
-                    )
-                    keyboard.row(button)
-                    cid = call.message.chat.id
-                    mid = call.message.message_id
-                    bot.edit_message_text(
-                        chat_id=cid,
-                        message_id=mid,
-                        text="Попробуй еще раз🕹",
-                        reply_markup=keyboard,
-                    )
+                    utils_mines.lostreply(call, size, field)
                 else:
                     nopened = 0
                     minecounter = 0
@@ -551,7 +504,6 @@ def fieldgame(call):
                                 minecounter += 1
                         if nopened == minecounter:
                             utils_mines.winreply(call, size, field)
-                            dbmine.delete_one({"_id": call.message.chat.id})
                         else:
                             keyboard = utils_mines.board(size, field)
                             cid = call.message.chat.id
@@ -576,6 +528,76 @@ def fieldgame(call):
         log_call(call)
 
 
+# MARK MODE OFF
+@bot.callback_query_handler(lambda query: query.data == "mark-")
+def mark_off(call):
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if str(is_user) == "None":
+        users.insert_one(
+            {
+                "_id": call.message.chat.id,
+                "username": call.from_user.username,
+                "fname": call.from_user.first_name,
+                "ban": 0,
+                "small": 0,
+            }
+        )
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
+        find = dbmine.find_one({"_id": call.from_user.id})
+        if str(find) != "None":
+            field = find["field"]
+            size = find["size"]
+            keyboard = utils_mines.board(size, field)
+            cid = call.message.chat.id
+            mid = call.message.message_id
+            bot.edit_message_text(
+                chat_id=cid,
+                message_id=mid,
+                text="Чтобы переключиться между режимом флажков🚩 и обычным💣 нажми кнопку внизу",
+                reply_markup=keyboard,
+            )
+
+
+# MARK ON
+@bot.callback_query_handler(lambda query: "m+" in query.data)
+def markplus(call):
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if str(is_user) == "None":
+        users.insert_one(
+            {
+                "_id": call.message.chat.id,
+                "username": call.from_user.username,
+                "fname": call.from_user.first_name,
+                "ban": 0,
+                "small": 0,
+            }
+        )
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
+        find = dbmine.find_one({"_id": call.message.chat.id})
+        if str(find) != "None":
+            size = int(call.data[2])
+            x = int(call.data[3])
+            y = int(call.data[4])
+            c = x * size + y
+            field = find["field"]
+            field[c]["is_marked"] = 1
+            dbmine.update_one(
+                {"_id": call.message.chat.id}, {"$set": {"field": field}},
+            )
+            keyboard = utils_mines.mark(size, field)
+            bot.edit_message_text(
+                "Чтобы переключиться между режимом флажков🚩 и обычным💣 нажми кнопку внизу",
+                call.message.chat.id,
+                call.message.message_id,
+                reply_markup=keyboard,
+            )
+
+
+# MARK OFF
 @bot.callback_query_handler(lambda query: "m-" in query.data)
 def markminus(call):
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -587,12 +609,11 @@ def markminus(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         find = dbmine.find_one({"_id": call.message.chat.id})
         if str(find) != "None":
             size = int(call.data[2])
@@ -613,6 +634,7 @@ def markminus(call):
             )
 
 
+# COMPLETE GAME
 @bot.callback_query_handler(lambda query: query.data == "prevgame")
 def prev_game(call):
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -624,11 +646,10 @@ def prev_game(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         find = dbmine.find_one({"_id": call.from_user.id})
         find["message"] = call.message.message_id
         dbmine.update_one(
@@ -648,6 +669,7 @@ def prev_game(call):
         )
 
 
+# NEW GAME
 @bot.callback_query_handler(lambda query: query.data == "newgame")
 def new_game(call):
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -659,18 +681,18 @@ def new_game(call):
                 "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         log_call(call)
         if is_user["ban"] == 0:
             dbmine.delete_one({"_id": call.from_user.id})
             utils_mines.start_menu(call.message)
 
 
+# COMPLETED FIELDS
 @bot.callback_query_handler(lambda query: query.data == "OK")
 def okay(call):
     is_user = users.find_one({"_id": call.message.chat.id})
@@ -678,15 +700,15 @@ def okay(call):
         users.insert_one(
             {
                 "_id": call.message.chat.id,
-                "username": call.message.chat.username,
-                "fname": call.message.chat.first_name,
+                "username": call.from_user.username,
+                "fname": call.from_user.first_name,
                 "ban": 0,
                 "small": 0,
-                "won": 0,
-                "lost": 0,
             }
         )
-    bot.answer_callback_query(call.id, "Done")
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if is_user["ban"] == 0:
+        bot.answer_callback_query(call.id, "Done")
     # log_call(call)
 
 
