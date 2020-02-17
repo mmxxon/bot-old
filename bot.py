@@ -50,7 +50,7 @@ def start(message):
                 message,
                 "Вы уже подписаны на обновления бота\n\n<b>Бот может</b>:\n- Показать папужку: /papuga\n- Создать игру в сапёр /minesweeper\n- Показать статистику из сапера /stats\n- (Новое скоро)",
                 reply_markup=data,
-                parse_mode="html"
+                parse_mode="html",
             )
             log(message)
         else:
@@ -778,8 +778,9 @@ def clstats2(call):
             {"_id": call.message.chat.id},
             {"$unset": {"lost": 1, "points": 1, "won": 1}},
         )
-        bot.delete_message(call.message.chat.id, call.message.message_id)
-        bot.send_message(call.message.chat.id, "OK")
+        bot.edit_message_text(
+            call.message.chat.id, call.message.message_id, text="OK"
+        )
 
 
 #
