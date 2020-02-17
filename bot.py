@@ -142,6 +142,7 @@ def unban(message):
                 bot.reply_to(message, "User not found")
     else:
         bot.reply_to(message, "Restricted area")
+        log(message)
 
 
 @bot.message_handler(commands=["mass"])
@@ -351,16 +352,24 @@ def stats(message):
                 lost = int(is_played["lost"])
                 points = int(is_played["points"])
                 game = types.InlineKeyboardMarkup()
-                button = types.InlineKeyboardButton(
+                button1 = types.InlineKeyboardButton(
                     text="Сыграть еще", callback_data="newgame"
                 )
+                button2 = types.InlineKeyboardButton(
+                    text="Очистить статистику", callback_data="clstats1"
+                )
                 txt = utils_mines.stattxt(name, won, lost, points)
-                game.add(button)
-                bot.send_message(message.chat.id, str(txt), parse_mode="html")
+                game.row(button2, button1)
+                bot.send_message(
+                    message.chat.id,
+                    str(txt),
+                    parse_mode="html",
+                    reply_markup=game,
+                )
 
 
 # GENERATE FIELD
-@bot.callback_query_handler(lambda query: "s" in query.data)
+@bot.callback_query_handler(lambda query: query.data[0] == "s")
 def fieldbegin(call):
     is_user = users.find_one({"_id": call.message.chat.id})
     if str(is_user) == "None":
@@ -710,6 +719,63 @@ def okay(call):
     if is_user["ban"] == 0:
         bot.answer_callback_query(call.id, "Done")
     # log_call(call)
+
+
+@bot.callback_query_handler(lambda query: query.data == "clstats1")
+def clstats(call):
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if str(is_user) == "None":
+        users.insert_one(
+            {
+                "_id": call.message.chat.id,
+                "username": call.from_user.username,
+                "fname": call.from_user.first_name,
+                "ban": 0,
+                "small": 0,
+            }
+        )
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if is_user["ban"] == 0:
+        buttons = types.InlineKeyboardMarkup()
+        button1 = types.InlineKeyboardButton(
+            text="Да", callback_data="clstats2"
+        )
+        button2 = types.InlineKeyboardButton(text="Нет", callback_data="clret")
+        buttons.row(button1, button2)
+        bot.edit_message_text(
+            "Точно?",
+            call.message.chat.id,
+            call.message.message_id,
+            reply_markup=buttons,
+        )
+    # log_call(call)
+
+
+@bot.callback_query_handler(lambda query: query.data == "clret")
+def clret(call):
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    stats(call.message)
+
+
+@bot.callback_query_handler(lambda query: query.data == "clstats2")
+def clstats2(call):
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if str(is_user) == "None":
+        users.insert_one(
+            {
+                "_id": call.message.chat.id,
+                "username": call.from_user.username,
+                "fname": call.from_user.first_name,
+                "ban": 0,
+                "small": 0,
+            }
+        )
+    is_user = users.find_one({"_id": call.message.chat.id})
+    if is_user["ban"] == 0:
+        dbmine.update(
+            {"_id": call.message.chat.id},
+            {"$unset": {"lost": "", "points": "", "won": ""}},
+        )
 
 
 #
