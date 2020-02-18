@@ -24,23 +24,23 @@ bot = telebot.AsyncTeleBot(TOKEN)
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    is_user = users.find_one({"_id": message.chat.id})
-    if str(is_user) == "None":
-        users.insert_one(
-            {
-                "_id": message.chat.id,
-                "username": message.from_user.username,
-                "fname": message.from_user.first_name,
-                "ban": 0,
-                "small": 0,
-            }
-        )
-        key = utils_global.small(1)
-        bot.reply_to(
-            message, utils_global.txtstart, reply_markup=key, parse_mode="html"
-        )
-    elif is_user["ban"] == 0:
-        if message.chat.type == "private":
+    if message.chat.type == "private":
+        is_user = users.find_one({"_id": message.chat.id})
+        if str(is_user) == "None":
+            users.insert_one(
+                {
+                    "_id": message.from_user.id,
+                    "username": message.from_user.username,
+                    "fname": message.from_user.first_name,
+                    "ban": 0,
+                    "small": 0,
+                }
+            )
+            key = utils_global.small(1)
+            bot.reply_to(
+                message, utils_global.txtstart, reply_markup=key, parse_mode="html"
+            )
+        elif is_user["ban"] == 0:
             utils_global.update_info(is_user, message, users)
             if is_user["small"] == 0:
                 data = utils_global.small(1)
@@ -53,25 +53,25 @@ def start(message):
                 parse_mode="html",
             )
             log(message)
-        else:
-            bot.reply_to(message, "Works only in private chats")
+    else:
+        bot.reply_to(message, "Works only in private chats")
 
 
 @bot.message_handler(commands=["papuga"])
 def ppuga(message):
-    is_user = users.find_one({"_id": message.chat.id})
-    if str(is_user) == "None":
-        users.insert_one(
-            {
-                "_id": message.chat.id,
-                "username": message.from_user.username,
-                "fname": message.from_user.first_name,
-                "ban": 0,
-                "small": 0,
-            }
-        )
-    elif is_user["ban"] == 0:
-        if message.chat.type == "private":
+    if message.chat.type == "private":
+        is_user = users.find_one({"_id": message.chat.id})
+        if str(is_user) == "None":
+            users.insert_one(
+                {
+                    "_id": message.chat.id,
+                    "username": message.from_user.username,
+                    "fname": message.from_user.first_name,
+                    "ban": 0,
+                    "small": 0,
+                }
+            )
+        elif is_user["ban"] == 0:
             utils_global.update_info(is_user, message, users)
             for i in papug.aggregate([{"$sample": {"size": 1}}]):
                 id = i["id2"]
@@ -80,8 +80,8 @@ def ppuga(message):
                 except:
                     continue
             log(message)
-        else:
-            bot.reply_to(message, "Works only in private chats")
+    else:
+        bot.reply_to(message, "Works only in private chats")
 
 
 @bot.callback_query_handler(lambda query: "small" in query.data)
@@ -92,9 +92,7 @@ def smallq(call):
         text = "Вы подписались на новости о небольших фиксах"
     else:
         text = "Вы отписались от новостей о небольших фиксах"
-    bot.answer_callback_query(
-        callback_query_id=call.id, text=text, show_alert=1
-    )
+    bot.answer_callback_query(callback_query_id=call.id, text=text, show_alert=1)
 
 
 # ADMIN
@@ -112,9 +110,7 @@ def ban(message):
                     users.update_one({"_id": usr}, {"$set": {"ban": 1}})
                     name = is_user["fname"]
                     uname = is_user["username"]
-                    bot.reply_to(
-                        message, f"User |{name}|{i}|{uname} has banned"
-                    )
+                    bot.reply_to(message, f"User |{name}|{i}|{uname} has banned")
                 else:
                     bot.reply_to(message, "User already banned")
             else:
@@ -136,9 +132,7 @@ def unban(message):
                     users.update_one({"_id": usr}, {"$set": {"ban": 0}})
                     name = is_user["fname"]
                     uname = is_user["username"]
-                    bot.reply_to(
-                        message, f"User |{name}|{i}|{uname} has unbanned"
-                    )
+                    bot.reply_to(message, f"User |{name}|{i}|{uname} has unbanned")
                 else:
                     bot.reply_to(message, "User not banned")
             else:
@@ -163,8 +157,7 @@ def mass(message):
                     uname = i["username"]
                     id = i["_id"]
                     bot.send_message(
-                        admin_id,
-                        f"Error sending message to |{name}|{id}|{uname}|",
+                        admin_id, f"Error sending message to |{name}|{id}|{uname}|",
                     )
                     continue
     else:
@@ -272,45 +265,35 @@ def dlbase(message):
 # START
 @bot.message_handler(commands=["minesweeper"])
 def minestart(message):
-    is_user = users.find_one({"_id": message.chat.id})
-    if str(is_user) == "None":
-        users.insert_one(
-            {
-                "_id": message.chat.id,
-                "username": message.from_user.username,
-                "fname": message.from_user.first_name,
-                "ban": 0,
-                "small": 0,
-            }
-        )
-    is_user = users.find_one({"_id": message.chat.id})
-    if is_user["ban"] == 0:
-        if message.chat.type == "private":
+    if message.chat.type == "private":
+        is_user = users.find_one({"_id": message.chat.id})
+        if str(is_user) == "None":
+            users.insert_one(
+                {
+                    "_id": message.chat.id,
+                    "username": message.from_user.username,
+                    "fname": message.from_user.first_name,
+                    "ban": 0,
+                    "small": 0,
+                }
+            )
+        is_user = users.find_one({"_id": message.chat.id})
+        if is_user["ban"] == 0:
             utils_global.update_info(is_user, message, users)
             log(message)
             find = dbmine.find_one({"_id": message.chat.id})
             if str(find) == "None":
                 # Buttons w sizes.
                 choice = types.InlineKeyboardMarkup()
-                button1 = types.InlineKeyboardButton(
-                    text="5", callback_data="s5"
-                )
-                button2 = types.InlineKeyboardButton(
-                    text="6", callback_data="s6"
-                )
+                button1 = types.InlineKeyboardButton(text="5", callback_data="s5")
+                button2 = types.InlineKeyboardButton(text="6", callback_data="s6")
                 choice.row(button1, button2)
-                button3 = types.InlineKeyboardButton(
-                    text="7", callback_data="s7"
-                )
-                button4 = types.InlineKeyboardButton(
-                    text="8", callback_data="s8"
-                )
+                button3 = types.InlineKeyboardButton(text="7", callback_data="s7")
+                button4 = types.InlineKeyboardButton(text="8", callback_data="s8")
                 choice.row(button3, button4)  # RETURN "S"
                 if str(message.from_user.id) != bot_id:
                     bot.send_message(
-                        message.chat.id,
-                        "Выбери размер поля🗺",
-                        reply_markup=choice,
+                        message.chat.id, "Выбери размер поля🗺", reply_markup=choice,
                     )
                 else:
                     bot.edit_message_text(
@@ -335,28 +318,29 @@ def minestart(message):
                     "Была найдена ваша предыдущая игра в этом чате. Вы можете начать новую или продолжить незавершенную",
                     reply_markup=choice,
                 )
-        else:
-            bot.reply_to(message, "Works only in private chats")
+    else:
+        bot.reply_to(message, "Works only in private chats")
 
 
 # STATS
 @bot.message_handler(commands=["stats"])
 def stats(message):
-    is_user = users.find_one({"_id": message.chat.id})
-    if str(is_user) == "None":
-        utils_global.update_info(is_user, message, users)
-        users.insert_one(
-            {
-                "_id": message.chat.id,
-                "username": message.from_user.username,
-                "fname": message.from_user.first_name,
-                "ban": 0,
-                "small": 0,
-            }
-        )
-    is_user = users.find_one({"_id": message.chat.id})
-    if is_user["ban"] == 0:
-        if message.chat.type == "private":
+    if message.chat.type == "private":
+        is_user = users.find_one({"_id": message.chat.id})
+        if str(is_user) == "None":
+            utils_global.update_info(is_user, message, users)
+            users.insert_one(
+                {
+                    "_id": message.chat.id,
+                    "username": message.from_user.username,
+                    "fname": message.from_user.first_name,
+                    "ban": 0,
+                    "small": 0,
+                }
+            )
+        is_user = users.find_one({"_id": message.chat.id})
+        if is_user["ban"] == 0:
+            log(message)
             is_played = users.find_one(
                 {"_id": message.chat.id, "won": {"$exists": "true"}}
             )
@@ -386,11 +370,10 @@ def stats(message):
                 txt = utils_mines.stattxt(name, won, lost, points)
                 game.row(button2, button1)
                 bot.send_message(
-                    message.chat.id,
-                    str(txt),
-                    parse_mode="html",
-                    reply_markup=game,
+                    message.chat.id, str(txt), parse_mode="html", reply_markup=game,
                 )
+    else:
+        bot.reply_to(message, "Works only in private chats")
 
 
 # GENERATE FIELD
@@ -548,9 +531,7 @@ def fieldgame(call):
                                 text="Чтобы переключиться между режимом флажков🚩 и обычным💣 нажми кнопку внизу",
                                 reply_markup=keyboard,
                             )
-                            find = dbmine.find_one(
-                                {"_id": call.message.chat.id}
-                            )
+                            find = dbmine.find_one({"_id": call.message.chat.id})
                             dbmine.update_one(
                                 {"_id": call.message.chat.id},
                                 {"$set": {"field": field}},
@@ -762,9 +743,7 @@ def clstats(call):
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
         buttons = types.InlineKeyboardMarkup()
-        button1 = types.InlineKeyboardButton(
-            text="Да", callback_data="clstats2"
-        )
+        button1 = types.InlineKeyboardButton(text="Да", callback_data="clstats2")
         button2 = types.InlineKeyboardButton(text="Нет", callback_data="clret")
         buttons.row(button1, button2)
         bot.edit_message_text(
@@ -802,9 +781,7 @@ def clstats2(call):
             {"$unset": {"lost": 1, "points": 1, "won": 1}},
         )
         bot.edit_message_text(
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            text="OK",
+            chat_id=call.message.chat.id, message_id=call.message.message_id, text="OK",
         )
 
 
@@ -829,9 +806,7 @@ def frwrd(message):
                 )
                 log(message)
             else:
-                bot.reply_to(
-                    message, "Please send message only from private chats"
-                )
+                bot.reply_to(message, "Please send message only from private chats")
 
 
 #
@@ -844,11 +819,7 @@ if heroku_check():
     @server.route("/" + TOKEN, methods=["POST"])
     def getMessage():
         bot.process_new_updates(
-            [
-                telebot.types.Update.de_json(
-                    request.stream.read().decode("utf-8")
-                )
-            ]
+            [telebot.types.Update.de_json(request.stream.read().decode("utf-8"))]
         )
         return "!", 200
 
