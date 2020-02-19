@@ -723,6 +723,7 @@ def okay(call):
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         bot.answer_callback_query(call.id, "Done")
     # log_call(call)
 
@@ -742,6 +743,7 @@ def clstats(call):
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         buttons = types.InlineKeyboardMarkup()
         button1 = types.InlineKeyboardButton(text="Да", callback_data="clstats2")
         button2 = types.InlineKeyboardButton(text="Нет", callback_data="clret")
@@ -776,6 +778,7 @@ def clstats2(call):
         )
     is_user = users.find_one({"_id": call.message.chat.id})
     if is_user["ban"] == 0:
+        utils_global.update_info(is_user, call.message, users)
         users.update_one(
             {"_id": call.message.chat.id},
             {"$unset": {"lost": 1, "points": 1, "won": 1}},
@@ -787,6 +790,40 @@ def clstats2(call):
 
 #
 # MINESWEEPER
+# -----
+# NEW GAME
+
+
+@bot.message_handler(commands=["test"])
+def tic(message):
+    if message.chat.type == "private":
+        is_user = users.find_one({"_id": message.chat.id})
+        if str(is_user) == "None":
+            users.insert_one(
+                {
+                    "_id": message.chat.id,
+                    "username": message.from_user.username,
+                    "fname": message.from_user.first_name,
+                    "ban": 0,
+                    "small": 0,
+                }
+            )
+        is_user = users.find_one({"_id": message.chat.id})
+        if is_user["ban"] == 0:
+            argument = extract_arg(message.text)
+            user_2 = str(argument[0])
+            is_user = users.find_one({"username": user_2})
+            if str(is_user) == "None":
+                bot.reply_to(
+                    message, "Второй игрок не подписался на бота или не существует"
+                )
+            else:
+                print("noice")
+    else:
+        bot.reply_to(message, "Works only in private chats")
+
+
+# NEW GAME
 # -----
 # Other text
 

@@ -7,17 +7,7 @@ import time
 
 
 def html_message(
-    datetime,
-    textm,
-    ctype,
-    cid,
-    cusername,
-    name,
-    lname,
-    username,
-    id,
-    text,
-    data,
+    datetime, textm, ctype, cid, cusername, name, lname, username, id, text, data,
 ):
     return f"""
 <b>NEW {textm}</b>
@@ -80,10 +70,7 @@ def update_info(is_user, message, users):
 
 
 def log(message):
-    if (
-        str(message.from_user.id) != bot_id
-        and str(message.from_user.id) != admin_id
-    ):
+    if str(message.from_user.id) != bot_id and str(message.from_user.id) != admin_id:
         kyiv = pytz.timezone("Europe/Kiev")
         kyiv_time = kyiv.localize(datetime.now())
         timen = kyiv_time.strftime("%d %B %Y %H:%M:%S")
