@@ -808,21 +808,31 @@ def tic(message):
                     "small": 0,
                 }
             )
-        is_user = users.find_one({"_id": message.chat.id})
-        if is_user["ban"] == 0:
-            utils_global.update_info(is_user, message, users)
+        is_user1 = users.find_one({"_id": message.chat.id})
+        if is_user1["ban"] == 0:
+            utils_global.update_info(is_user1, message, users)
+            log(message)
             argument = extract_arg(message.text)
             if len(argument) != 0:
-                user_2 = str(argument[0])
-                is_user = users.find_one({"username": user_2})
-                if str(is_user) == "None":
-                    bot.reply_to(
-                        message,
-                        "*Ошибка*:Второй игрок не подписался на бота или неправильный юзернейм",
-                        parse_mode="markdown",
-                    )
+                if len(argument) == 1:
+                    user_2 = str(argument[0])
+                    if user_2[0] == "@":
+                        user_2 = user_2[1:]
+                    is_user2 = users.find_one({"username": user_2})
+                    if str(is_user2) == "None":
+                        bot.reply_to(
+                            message,
+                            "*Ошибка*:Второй игрок не подписался на бота или неверный юзернейм",
+                            parse_mode="markdown",
+                        )
+                    else:
+                        if is_user
+                        print(is_user["_id"])
+                        print(is_user["username"])
+                        print(is_user2["_id"])
+                        print(is_user2["username"])
                 else:
-                    print("noice")
+                    bot.reply_to(message, "Слишком много аргументов в запросе")
             else:
                 bot.reply_to(message, "Введите ник второго игрока")
     else:
