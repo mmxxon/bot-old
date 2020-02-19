@@ -826,7 +826,6 @@ def tic(message):
                             parse_mode="markdown",
                         )
                     else:
-                        if is_user
                         print(is_user["_id"])
                         print(is_user["username"])
                         print(is_user2["_id"])
