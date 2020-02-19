@@ -810,15 +810,21 @@ def tic(message):
             )
         is_user = users.find_one({"_id": message.chat.id})
         if is_user["ban"] == 0:
+            utils_global.update_info(is_user, message, users)
             argument = extract_arg(message.text)
-            user_2 = str(argument[0])
-            is_user = users.find_one({"username": user_2})
-            if str(is_user) == "None":
-                bot.reply_to(
-                    message, "Второй игрок не подписался на бота или не существует"
-                )
+            if len(argument) != 0:
+                user_2 = str(argument[0])
+                is_user = users.find_one({"username": user_2})
+                if str(is_user) == "None":
+                    bot.reply_to(
+                        message,
+                        "*Ошибка*:Второй игрок не подписался на бота или неправильный юзернейм",
+                        parse_mode="markdown",
+                    )
+                else:
+                    print("noice")
             else:
-                print("noice")
+                bot.reply_to(message, "Введите ник второго игрока")
     else:
         bot.reply_to(message, "Works only in private chats")
 
