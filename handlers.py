@@ -1,6 +1,5 @@
 import utils
 from utils import bog, users, saper
-import callbacks
 import minesweeper_utils
 import random
 
