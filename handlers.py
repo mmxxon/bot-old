@@ -2,6 +2,7 @@ import utils
 from utils import bog, users, saper
 import minesweeper_utils
 import random
+from consts import MARKUP
 
 
 @bog.message_handler(commands=["start"])
@@ -68,11 +69,9 @@ def minestart_handler(message):
     minesweeper_utils.mine(message)
 
 
-"""
 @bog.message_handler(commands=["stats"])
 def stats_handler(message):
-
-"""
+    minesweeper_utils.stats(message)
 
 
 @bog.message_handler(
@@ -236,17 +235,19 @@ def query_handler(call):
         )
     elif arr[0] == "foundgame":
         find = saper.find_one({"_id": call.message.chat.id})
-        if not find:
-            return
         if arr[1] == "new":
             try:
                 bog.delete_message(call.message.chat.id, int(find["message"]))
             except:
                 pass
-            saper.delete_one({"_id": call.message.chat.id})
-            minesweeper_utils.start(call.message)
+            if not find:
+                minesweeper_utils.start(call.message)
+            if saper.find_one({"_id": call.message.chat.id}):
+                saper.delete_one({"_id": call.message.chat.id})
+            minesweeper_utils.mine(call.message)
         elif arr[1] == "prev":
-            find = saper.find_one({"_id": call.from_user.id})
+            if not find:
+                return
             try:
                 bog.delete_message(call.message.chat.id, int(find["message"]))
             except:
@@ -265,6 +266,27 @@ def query_handler(call):
                 text="Чтобы переключиться между режимом флажков и обычным нажми кнопку внизу",
                 reply_markup=keyboard,
             )
+    elif arr[0] == "clearmine":
+        if arr[1] == "first":
+            bog.edit_message_text(
+                "Точно?",
+                call.message.chat.id,
+                call.message.message_id,
+                reply_markup=MARKUP.CLEAR_MINE_STAT_2,
+            )
+        elif arr[1] == "second":
+            users.update_one(
+                {"_id": call.message.chat.id},
+                {"$unset": {"lost": 1, "points": 1, "won": 1}},
+            )
+            bog.edit_message_text(
+                chat_id=call.message.chat.id,
+                message_id=call.message.message_id,
+                text="OK",
+            )
+        elif arr[1] == "clret":
+            bog.delete_message(call.message.chat.id, call.message.message_id)
+            minesweeper_utils.stats(call.message)
     elif arr[0] == "OK":
         bog.answer_callback_query(call.id, "Not changed")
     else:

@@ -273,3 +273,25 @@ def mark(size, field):
         keyboard.row(*rows)
     keyboard.row(MARKUP.MODE2)
     return keyboard
+
+
+def stats(message):
+    if users.find_one({"_id": message.chat.id, "won": {"$exists": "true"}}):
+        user = users.find_one({"_id": message.chat.id})
+        name = user["n"]
+        won = int(user["won"])
+        lost = int(user["lost"])
+        points = int(user["points"])
+        txt = consts.stattxt(name, won, lost, points)
+        bog.send_message(
+            message.chat.id,
+            str(txt),
+            parse_mode="html",
+            reply_markup=Mark().row(MARKUP.NEWGAME_B, MARKUP.CLEAR_MINE_STAT),
+        )
+    else:
+        bog.send_message(
+            message.chat.id,
+            "Сыграй сначала хотя бы одну игру🕹",
+            reply_markup=Mark().row(MARKUP.NEWGAME_B),
+        )

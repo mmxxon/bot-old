@@ -29,6 +29,7 @@ else:
     TOKEN = config.token
     uri = config.uri
     bot_id = config.bot_id
+    url = config.url
 
 bog = telebot.TeleBot(TOKEN)
 servak = MongoClient(uri)
