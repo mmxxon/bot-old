@@ -32,7 +32,7 @@ else:
     bot_id = config.bot_id
     url = config.url
 
-bog = telebot.TeleBot(TOKEN)
+bog = telebot.AsyncTeleBot(TOKEN)
 servak = MongoClient(uri)
 users = servak["userdb"]["users"]
 papug = servak["userdb"]["papug"]
