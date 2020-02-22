@@ -1,6 +1,6 @@
 import telebot
 import os
-from utils import bog, TOKEN, heroku_check
+from utils import bog, TOKEN, heroku_check, url
 import handlers
 
 
