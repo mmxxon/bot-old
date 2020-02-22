@@ -208,7 +208,6 @@ def query_handler(call):
         elif arr[1] == "minus":
             keyboard = minesweeper_utils.board(size, field)
         elif arr[1] == "add":
-            bog.answer_callback_query(call.id, call.data)
             x = int(arr[2])
             y = int(arr[3])
             c = x * size + y

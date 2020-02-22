@@ -57,7 +57,7 @@ txtstart = (
 
 
 def log(message):
-    if str(message.from_user.id) != bot_id and str(message.from_user.id) != admin_id:
+    if message.from_user.id != bot_id and message.from_user.id != admin_id:
         kyiv = pytz.timezone("Europe/Kiev")
         kyiv_time = kyiv.localize(datetime.now())
         timen = kyiv_time.strftime("%d %B %Y %H:%M:%S")
