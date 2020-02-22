@@ -6,6 +6,25 @@ def _callback(*args):
     return "$".join([str(i) for i in args])
 
 
+def html_message(
+    datetime, textm, ctype, cid, cusername, name, lname, username, id, text, data,
+):
+    return f"""
+<b>NEW {textm}</b>
+<b>TIME</b>: <code>{datetime}</code>
+<b>CHAT</b>
+- TYPE: <code>{ctype}</code>
+- ID: <code>{str(cid)}</code>
+- NAME: @{str(cusername)}
+<b>USER</b>
+- First: |<code>{name}</code>|
+- Last:  |<code>{lname}</code>|
+- Username: @{str(username)}
+- ID: <code>{str(id)}</code>
+MESSAGE TEXT: |<code>{text}</code>|
+<b>CALL DATA</b>: |<code>{data}</code>|"""
+
+
 def stattxt(name, won, lost, points):
     all = won + lost
     if won != 0 and lost != 0:

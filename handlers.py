@@ -1,5 +1,5 @@
 import utils
-from utils import bog, users, saper
+from utils import bog, users, saper, log
 import minesweeper_utils
 import random
 from consts import MARKUP

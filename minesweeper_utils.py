@@ -1,14 +1,14 @@
 from consts import MARKUP
 import consts
 import utils
-from utils import saper, bog, users
+from utils import saper, bog, users, log
 from telebot.types import InlineKeyboardMarkup as Mark
 
 
 def mine(message):
     if utils.chat_test(message.chat.id, message.chat.username) != 0:
         return
-
+    log(message)
     start(message)
 
 
@@ -276,6 +276,9 @@ def mark(size, field):
 
 
 def stats(message):
+    if utils.chat_test(message.chat.id, message.chat.username) != 0:
+        return
+    log(message)
     if users.find_one({"_id": message.chat.id, "won": {"$exists": "true"}}):
         user = users.find_one({"_id": message.chat.id})
         name = user["n"]

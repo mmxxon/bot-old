@@ -2,6 +2,7 @@ import os
 import telebot
 from pymongo import MongoClient
 from consts import MARKUP
+import consts
 from telebot import types
 from datetime import datetime
 import pytz
@@ -55,6 +56,27 @@ txtstart = (
 #
 
 
+def log(message):
+    if str(message.from_user.id) != bot_id and str(message.from_user.id) != admin_id:
+        kyiv = pytz.timezone("Europe/Kiev")
+        kyiv_time = kyiv.localize(datetime.now())
+        timen = kyiv_time.strftime("%d %B %Y %H:%M:%S")
+        html = consts.html_message(
+            timen,
+            "MESSAGE",
+            message.chat.type,
+            message.chat.id,
+            message.chat.username,
+            message.from_user.first_name,
+            message.from_user.last_name,
+            message.from_user.username,
+            message.from_user.id,
+            message.text,
+            "None",
+        )
+        bog.send_message(group1, html, parse_mode="html")
+
+
 def form(message):
     text = message.text
     chat = message.chat.id
@@ -97,7 +119,7 @@ def start_message(message, markup):
 def start_menu(message):
     if chat_test(message.chat.id, message.chat.username) != 0:
         return
-
+    log(message)
     if users.find_one({"_id": message.chat.id, "small": {"$exists": False}}):
         start_message(message, MARKUP.START)
     else:
@@ -107,7 +129,7 @@ def start_menu(message):
 def papuga(message):
     if chat_test(message.chat.id, message.chat.username) != 0:
         return
-
+    log(message)
     for i in papug.aggregate([{"$sample": {"size": 1}}]):
         id = i["id2"]
         try:
@@ -119,7 +141,7 @@ def papuga(message):
 def text(message):
     if chat_test(message.chat.id, message.chat.username) != 0:
         return
-
+    log(message)
     bog.send_message(admin_id, form(message))
 
 
