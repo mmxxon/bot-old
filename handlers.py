@@ -231,8 +231,8 @@ def query_handler(call):
             )
             keyboard = minesweeper_utils.mark(size, field)
         elif arr[1] == "remove":
-            x = int(call.data[2])
-            y = int(call.data[3])
+            x = int(arr[2])
+            y = int(arr[3])
             c = x * size + y
             field = find["field"]
             field[c]["flag"] = 0
