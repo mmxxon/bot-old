@@ -90,8 +90,8 @@ def start(message):
 
 
 def begin_game(find):
-    # bog.edit_message_text("Begin", int(find["_id"]), int(find["mid"]))
-    # bog.edit_message_text("Begin2", int(find["_id2"]), int(find["mid2"]))
+    bog.edit_message_text("Begin", int(find["_id"]), int(find["mid"]))
+    bog.edit_message_text("Begin2", int(find["_id2"]), int(find["mid2"]))
     move = random.randint(0, 1)
     field = empty_field()
     tictac.update_one(find, {"$set": {"m": move, "fm": move, "field": field}})
