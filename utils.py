@@ -56,7 +56,7 @@ def log(message):
             message.text,
             "None",
         )
-        bog.send_message(admin_id, html, parse_mode="html")
+        bog.send_message(group1, html, parse_mode="html")
 
 
 def form(message):
