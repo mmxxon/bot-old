@@ -90,11 +90,36 @@ def start(message):
 
 
 def begin_game(find):
-    bog.edit_message_text("Begin", int(find["_id"]), int(find["mid"]))
-    bog.edit_message_text("Begin2", int(find["_id2"]), int(find["mid2"]))
+    # bog.edit_message_text("Begin", int(find["_id"]), int(find["mid"]))
+    # bog.edit_message_text("Begin2", int(find["_id2"]), int(find["mid2"]))
     move = random.randint(0, 1)
-    tictac.update_one(find, {"$set": {"m": move, "fm": move}})
-    find = tictac.find_one({"_id": find["_id"]})
     field = empty_field()
-    print(field)
-    # tictac.delete_one(find)
+    tictac.update_one(find, {"$set": {"m": move, "fm": move, "field": field}})
+    find = tictac.find_one({"_id": find["_id"]})
+    print(find)
+    tictac.delete_one(find)
+
+
+"""
+    if int(find["fm"]) == 0:
+        keyfirst =
+        first(int(find["_id"]), int(find["mid"]))
+        second(int(find["_id2"]), int(find["mid2"]))
+    else:
+        first(int(find["_id2"]), int(find["mid2"]))
+        second(int(find["_id"]), int(find["mid"]))
+
+
+def first(id, mid):
+    try:
+        bog.edit_message_text("Ваш ход", id, mid)
+    except:
+        bog.send_message(id, "Ваш ход")
+
+
+def second(id, mid):
+    try:
+        bog.edit_message_text("Ожидаем хода противника", id, mid)
+    except:
+        bog.send_message(id, "Ожидаем хода противника")
+"""

@@ -111,3 +111,22 @@ class MARKUP:
         But("Принять", None, _callback("ticinvite", "accept")),
         But("Отклонить", None, _callback("ticinvite", "decline")),
     )
+
+
+"""
+    def KEYFIRST(field, fm):
+        keyboard = Mark()
+        for i in range(3):
+            for j in range(3):
+                if int(field[3 * i + j]["val"]) == 0:
+                    text = "❌"
+                    type = "OK"
+                    data = type
+                elif int(field[3 * i + j]["val"]) == 1:
+                    text = "⭕️"
+                    type = "OK"
+                    data = type
+                elif fm == 0:
+                    text = "⚫️"
+                    type = ""
+"""
