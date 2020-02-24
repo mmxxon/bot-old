@@ -6,21 +6,43 @@ def _callback(*args):
     return "$".join([str(i) for i in args])
 
 
+txtstart = (
+    "<b>Вы подписаны на важные обновления бота</b>\n"
+    + "Все крупные обновления будут сопровождаться оповещениями (не чаще раза в неделю)."
+    + "Кнопкой ниже можно включить/выключить так же остальные оповещения(не чаще раза в день)"
+    + "\n\n<b>Бот может</b>:\n"
+    + "- Показать папужку: /papuga\n"
+    + "- Создать игру в сапёр /minesweeper\n"
+    + "- Показать статистику из сапера /stats\n"
+    + "- (Новое скоро)"
+)
+
+ticrules = (
+    "<b>Правила телеграмм версии крестиков -ноликов</b>\n"
+    + "  1)Чтобы начать игру нужно ввести юзернейм игрока, которого нужно пригласить в команду\n"
+    + "так: <code>/tic @username</code> или <code>/tic username</code>.\n"
+    + "Игрок должен предварительно написать боту любое сообщение "
+    + "(чтобы он появился в базе данных)\n"
+    + "  2)Игрок должен одобрить запрос в личке бота\n"
+    + "  3)После этого случайный игрок станет первым(крестиком)\n"
+    + "  4)Игра завершается, когда:\n"
+    + "---1.Не остается свободных клеток\n"
+    + "---2.Один из игроков собирает три знака в ряд\n"
+    + "---3.Один из игорков отменит игру(сдастся)"
+)
+
+
 def html_message(
-    datetime, textm, ctype, cid, cusername, name, lname, username, id, text, data,
+    datetime, textm, name, lname, username, id, text, data,
 ):
     return f"""
 <b>NEW {textm}</b>
 <b>TIME</b>: <code>{datetime}</code>
-<b>CHAT</b>
-- TYPE: <code>{ctype}</code>
-- ID: <code>{str(cid)}</code>
-- NAME: @{str(cusername)}
 <b>USER</b>
 - First: |<code>{name}</code>|
 - Last:  |<code>{lname}</code>|
-- Username: @{str(username)}
-- ID: <code>{str(id)}</code>
+- Username: @{username}
+- ID: <code>{id}</code>
 MESSAGE TEXT: |<code>{text}</code>|
 <b>CALL DATA</b>: |<code>{data}</code>|"""
 
@@ -80,4 +102,12 @@ class MARKUP:
     CLEAR_MINE_STAT_2 = Mark().row(
         But("Да", None, _callback("clearmine", "second")),
         But("Нет", None, _callback("clearmine", "clret")),
+    )
+    SEND_TIC_INVITE = Mark().row(
+        But("Да", None, _callback("ticinvite", "yes")),
+        But("Нет", None, _callback("ticinvite", "no")),
+    )
+    ACCEPT_TIC_INVITE = Mark().row(
+        But("Принять", None, _callback("ticinvite", "accept")),
+        But("Отклонить", None, _callback("ticinvite", "decline")),
     )

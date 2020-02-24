@@ -32,30 +32,15 @@ else:
     bot_id = config.bot_id
     url = config.url
 
-bog = telebot.AsyncTeleBot(TOKEN)
+bog = telebot.TeleBot(TOKEN)
 servak = MongoClient(uri)
 users = servak["userdb"]["users"]
 papug = servak["userdb"]["papug"]
 saper = servak["userdb"]["minesweeper"]
-# vars
-#
-txtstart = (
-    "<b>Вы подписаны на важные обновления бота</b>\n"
-    + "Все крупные обновления будут сопровождаться оповещениями (не чаще раза в неделю)."
-    + "Кнопкой ниже можно включить/выключить так же остальные оповещения(не чаще раза в день)"
-    + "\n\n<b>Бот может</b>:\n"
-    + "- Показать папужку: /papuga\n"
-    + "- Создать игру в сапёр /minesweeper\n"
-    + "- Показать статистику из сапера /stats\n"
-    + "- (Новое скоро)"
-)
+tictac = servak["userdb"]["tic"]
 
-#
-# end vars
 # GOVNO
 #
-
-
 def log(message):
     if message.from_user.id != bot_id and message.from_user.id != admin_id:
         kyiv = pytz.timezone("Europe/Kiev")
@@ -64,9 +49,6 @@ def log(message):
         html = consts.html_message(
             timen,
             "MESSAGE",
-            message.chat.type,
-            message.chat.id,
-            message.chat.username,
             message.from_user.first_name,
             message.from_user.last_name,
             message.from_user.username,
@@ -74,7 +56,7 @@ def log(message):
             message.text,
             "None",
         )
-        bog.send_message(group1, html, parse_mode="html")
+        bog.send_message(admin_id, html, parse_mode="html")
 
 
 def form(message):
@@ -84,7 +66,7 @@ def form(message):
     kyiv = pytz.timezone("Europe/Kiev")
     kyiv_time = kyiv.localize(datetime.now())
     time = kyiv_time.strftime("%d %B %Y %H:%M:%S")
-    return f"{text}\n\n" + f"id:{chat}\n" + f"username:{user}\n" + f"time:{time}"
+    return f"{text}\n\n" + f"id:{chat}\n" + f"username:@{user}\n" + f"time:{time}"
 
 
 def chat_test(id, name):
@@ -112,7 +94,7 @@ def extract_arg(arg):
 #
 def start_message(message, markup):
     bog.send_message(
-        message.chat.id, txtstart, parse_mode="html", reply_markup=markup,
+        message.chat.id, consts.txtstart, parse_mode="html", reply_markup=markup,
     )
 
 
@@ -151,22 +133,24 @@ def text(message):
 #
 def ban(message):
     arg = extract_arg(message.text)
-    if users.find_one({"_id": int(arg[0]), "ban": {"$exists": 0}}):
-        users.update_one({"_id": int(arg[0])}, {"$set": {"ban": None}})
-        user = users.find_one({"_id": int(arg[0])})["n"]
-        bog.send_message(admin_id, f"Забанен @{user}")
-    else:
-        bog.send_message(admin_id, f"Не найден незабаненный {arg[0]}")
+    if len(arg) != 0:
+        if users.find_one({"_id": int(arg[0]), "ban": {"$exists": 0}}):
+            users.update_one({"_id": int(arg[0])}, {"$set": {"ban": None}})
+            user = users.find_one({"_id": int(arg[0])})["n"]
+            bog.send_message(admin_id, f"Забанен @{user}")
+        else:
+            bog.send_message(admin_id, f"Не найден незабаненный {arg[0]}")
 
 
 def unban(message):
     arg = extract_arg(message.text)
-    if users.find_one({"_id": int(arg[0]), "ban": {"$exists": 1}}):
-        users.update_one({"_id": int(arg[0])}, {"$unset": {"ban": 1}})
-        user = users.find_one({"_id": int(arg[0])})["n"]
-        bog.send_message(admin_id, f"Разбанен @{user}")
-    else:
-        bog.send_message(admin_id, f"Не найден забаненный {arg[0]}")
+    if len(arg) != 0:
+        if users.find_one({"_id": int(arg[0]), "ban": {"$exists": 1}}):
+            users.update_one({"_id": int(arg[0])}, {"$unset": {"ban": 1}})
+            user = users.find_one({"_id": int(arg[0])})["n"]
+            bog.send_message(admin_id, f"Разбанен @{user}")
+        else:
+            bog.send_message(admin_id, f"Не найден забаненный {arg[0]}")
 
 
 def mass(message):
@@ -180,7 +164,7 @@ def mass(message):
             uname = i["n"]
             id = i["_id"]
             bog.send_message(
-                admin_id, f"Error sending message to |{id}|{uname}|",
+                admin_id, f"Error sending message to |{id}|@{uname}|",
             )
             continue
 
@@ -196,7 +180,7 @@ def massmall(message):
             uname = i["n"]
             id = i["_id"]
             bog.send_message(
-                admin_id, f"Error sending message to |{id}|{uname}|",
+                admin_id, f"Error sending message to |{id}|@{uname}|",
             )
             continue
 
