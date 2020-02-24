@@ -206,7 +206,6 @@ def write(message):
 
 
 def papug_insert(message):
-    print(1)
     file_id = message.photo[-1].file_id
     response = requests.get(
         f"https://api.telegram.org/bot{TOKEN}/getFile?file_id={file_id}"

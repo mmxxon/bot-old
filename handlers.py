@@ -101,7 +101,7 @@ def dlbase_handler(message):
 def types_handler(message):
     if message.content_type == "text":
         utils.text(message)
-    elif message.content_type == "picture" and (
+    elif message.content_type == "photo" and (
         message.chat.id == utils.admin_id or message.chat.id == utils.kat
     ):
         utils.papug_insert(message)
