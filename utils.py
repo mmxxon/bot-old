@@ -217,6 +217,8 @@ def papug_insert(message):
             -1001477733398, file_id, file_id,
         )
         papug.insert_one({"_id": str(unique), "id2": str(file_id)})
+    else:
+        bog.reply_to(message, "Papug is not fucking inserted lol")
 
 
 def dlbase(message):
