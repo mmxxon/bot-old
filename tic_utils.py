@@ -179,28 +179,3 @@ def play_game(n, m, find, id, mid):
     bog.edit_message_text(
         "Begin2", first, fm, reply_markup=MARKUP.KEYSECOND(field),
     )
-
-
-"""
-    if find["fm"] == 0:
-        keyfirst =
-        first(find["_id"], find["mid"])
-        second(find["_id2"], find["mid2"])
-    else:
-        first(find["_id2"]), find["mid2"]))
-        second(find["_id"]), find["mid"]))
-
-
-def first(id, mid):
-    try:
-        bog.edit_message_text("Ваш ход", id, mid)
-    except:
-        bog.send_message(id, "Ваш ход")
-
-
-def second(id, mid):
-    try:
-        bog.edit_message_text("Ожидаем хода противника", id, mid)
-    except:
-        bog.send_message(id, "Ожидаем хода противника")
-"""

@@ -365,8 +365,26 @@ def query_handler(call):
             )
             find = tictac.find_one({"_id2": call.message.chat.id})
             tic_utils.begin_game(find)
+    elif arr[0] == "ticsurrender":
+        var = int(arr[1])
+        if var == 0:
+            find = tictac.find_one({"_id": call.message.chat.id})
         else:
-            bog.answer_callback_query(call.id, call.data)
+            find = tictac.find_one({"_id2": call.message.chat.id})
+        if find is None:
+            bog.edit_message_text(
+                "Игра не существует (ЛОЛ)", call.message.chat.id, call.message.message_id
+            )
+            return
+        if var == 0:
+            enemy = find["_id2"]
+        else:
+            enemy = find["_id"]
+        bog.delete_one(find)
+        bog.delete_message(int(find["_id"]), int(find["mid"]))
+        bog.delete_message(int(find["_id2"]), int(find["mid2"]))
+        bog.send_message(enemy, f"Игрок {call.message.chat.username}")
+        bog.send_message(call.message.chat.id, f"Вы сдались")
     elif arr[0] == "ticlick":
         n = int(arr[1])
         m = int(arr[2])

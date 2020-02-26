@@ -117,6 +117,7 @@ class MARKUP:
         But("Принять", None, _callback("ticinvite", "accept")),
         But("Отклонить", None, _callback("ticinvite", "decline")),
     )
+    SURRENDER = Mark().row(But("Сдаться", None, "ticsurrender"))
 
     def KEYFIRST(field):
         size = 3
