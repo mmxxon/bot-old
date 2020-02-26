@@ -173,8 +173,8 @@ def play_game(n, m, find, id, mid):
         fm = find["mid2"]
         sm = find["mid"]
     if whowon(field) == 1:
-        bog.edit_message_text("You lost", second, sm)
-        bog.edit_message_text("You won", first, fm)
+        bog.edit_message_text("Не в этот раз(🕹", second, sm)
+        bog.edit_message_text("🏆Победа!🏆", first, fm)
         tictac.delete_one(find)
         return
     bog.edit_message_text(
