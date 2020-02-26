@@ -369,7 +369,7 @@ def query_handler(call):
         var = int(arr[1])
         if var == 0:
             find = tictac.find_one({"_id": call.message.chat.id})
-        elif var == 1:
+        else:
             find = tictac.find_one({"_id2": call.message.chat.id})
         if find is None:
             bog.edit_message_text(
@@ -378,7 +378,7 @@ def query_handler(call):
             return
         if var == 0:
             enemy = find["_id2"]
-        elif var == 1:
+        else:
             enemy = find["_id"]
         tictac.delete_one(find)
         bog.delete_message(int(find["_id"]), int(find["mid"]))
