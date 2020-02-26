@@ -58,7 +58,8 @@ def log(message):
             "None",
         )
         # admin_id для теста
-        bog.send_message(group1, html, parse_mode="html")
+        task = bog.send_message(group1, html, parse_mode="html")
+        task.wait()
 
 
 def log_call(call):
@@ -76,7 +77,8 @@ def log_call(call):
             call.message.text,
             call.data,
         )
-        bog.send_message(group2, html, parse_mode="html")
+        task = bog.send_message(group2, html, parse_mode="html")
+        task.wait()
 
 
 def form(message):
