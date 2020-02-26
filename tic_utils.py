@@ -187,7 +187,7 @@ def play_game(n, m, find, id, mid, call):
         user1 = users.find_one({"_id": first})
         u1name = user1["n"]
         user2 = users.find_one({"_id": second})
-        u2name = user1["n"]
+        u2name = user2["n"]
         bog.edit_message_text(
             f"Вы проиграли🕹 @{u1name}", second, sm, reply_markup=MARKUP.KEYSECOND(field)
         )
