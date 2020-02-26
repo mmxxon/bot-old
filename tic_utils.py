@@ -153,10 +153,10 @@ def begin_game(find):
         fm = find["mid2"]
         sm = find["mid"]
     bog.edit_message_text(
-        "Ваш ход🕹", first, fm, reply_markup=MARKUP.KEYFIRST(field),
+        "Ваш ход_______🕹", first, fm, reply_markup=MARKUP.KEYFIRST(field),
     )
     bog.edit_message_text(
-        "Ход противника🕹", second, sm, reply_markup=MARKUP.KEYSECOND(field),
+        "Ход противника_🕹", second, sm, reply_markup=MARKUP.KEYSECOND(field),
     )
 
 
@@ -198,8 +198,8 @@ def play_game(n, m, find, id, mid):
         tictac.delete_one(find)
         return
     bog.edit_message_text(
-        "Ваш ход🕹", second, sm, reply_markup=MARKUP.KEYFIRST(field),
+        "Ваш ход_______🕹", second, sm, reply_markup=MARKUP.KEYFIRST(field),
     )
     bog.edit_message_text(
-        "Ход противника🕹", first, fm, reply_markup=MARKUP.KEYSECOND(field),
+        "Ход противника_🕹", first, fm, reply_markup=MARKUP.KEYSECOND(field),
     )
