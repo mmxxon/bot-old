@@ -184,8 +184,12 @@ def play_game(n, m, find, id, mid):
         fm = find["mid2"]
         sm = find["mid"]
     if whowon(field) == 1:
-        bog.edit_message_text("Не в этот раз(🕹", second, sm)
-        bog.edit_message_text("🏆Победа!🏆", first, fm)
+        bog.edit_message_text(
+            "Не в этот раз(🕹", second, sm, reply_markup=MARKUP.KEYSECOND(field)
+        )
+        bog.edit_message_text(
+            "🏆Победа!🏆", first, fm, reply_markup=MARKUP.KEYSECOND(field)
+        )
         tictac.delete_one(find)
         return
     if isfull(field) == 1:
@@ -194,8 +198,8 @@ def play_game(n, m, find, id, mid):
         tictac.delete_one(find)
         return
     bog.edit_message_text(
-        "Begin", second, sm, reply_markup=MARKUP.KEYFIRST(field),
+        "Ваш ход🕹", second, sm, reply_markup=MARKUP.KEYFIRST(field),
     )
     bog.edit_message_text(
-        "Begin2", first, fm, reply_markup=MARKUP.KEYSECOND(field),
+        "Ход противника🕹", first, fm, reply_markup=MARKUP.KEYSECOND(field),
     )
