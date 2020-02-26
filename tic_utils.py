@@ -46,9 +46,9 @@ def empty_field():
 
 def invite(usr1id, usr2id, usr2):
     if usr1id == usr2id:
-        bog.send_message(usr1id, "Много друзей, ага?")
-        # task = bog.send_message(usr1id, "Много друзей, ага?")
-        # task.wait()
+        # bog.send_message(usr1id, "Много друзей, ага?")
+        task = bog.send_message(usr1id, "Много друзей, ага?")
+        task.wait()
     bog.send_message(
         usr1id,
         f"Послать приглашение @{usr2}?",
