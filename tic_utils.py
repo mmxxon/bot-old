@@ -27,6 +27,17 @@ def whowon(field):
         return 0
 
 
+def isfull(field):
+    count = 0
+    for i in range(9):
+        if field[i]["val"] is not None:
+            count += 1
+    if count == 9:
+        return 1
+    else:
+        return 0
+
+
 def call_batya(call):
     admin = users.find_one({"_id": utils.admin_id})["n"]
     bog.edit_message_text(
@@ -175,6 +186,11 @@ def play_game(n, m, find, id, mid):
     if whowon(field) == 1:
         bog.edit_message_text("Не в этот раз(🕹", second, sm)
         bog.edit_message_text("🏆Победа!🏆", first, fm)
+        tictac.delete_one(find)
+        return
+    if isfull(field) == 1:
+        bog.edit_message_text("Ничья🕹", first, fm)
+        bog.edit_message_text("Ничья🕹", second, sm)
         tictac.delete_one(find)
         return
     bog.edit_message_text(
