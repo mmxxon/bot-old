@@ -193,8 +193,8 @@ def play_game(n, m, find, id, mid):
         tictac.delete_one(find)
         return
     if isfull(field) == 1:
-        bog.edit_message_text("Ничья🕹", first, fm)
-        bog.edit_message_text("Ничья🕹", second, sm)
+        bog.edit_message_text("Ничья🕹", first, fm, reply_markup=MARKUP.KEYSECOND(field))
+        bog.edit_message_text("Ничья🕹", second, sm, reply_markup=MARKUP.KEYSECOND(field))
         tictac.delete_one(find)
         return
     bog.edit_message_text(
