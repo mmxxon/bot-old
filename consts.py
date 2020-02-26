@@ -8,8 +8,10 @@ def _callback(*args):
 
 txtstart = (
     "<b>Вы подписаны на важные обновления бота</b>\n"
-    + "Все крупные обновления будут сопровождаться оповещениями (не чаще раза в неделю)."
-    + "Кнопкой ниже можно включить/выключить так же остальные оповещения(не чаще раза в день)"
+    + "Все крупные обновления будут сопровождаться"
+    + " оповещениями (не чаще раза в неделю)."
+    + "Кнопкой ниже можно включить/выключить так же"
+    + " остальные оповещения(не чаще раза в день)"
     + "\n\n<b>Бот может</b>:\n"
     + "- Показать папужку: /papuga\n"
     + "- Создать игру в сапёр /minesweeper\n"
@@ -18,17 +20,21 @@ txtstart = (
 )
 
 ticrules = (
-    "<b>Правила телеграмм версии крестиков -ноликов</b>\n"
-    + "  1)Чтобы начать игру нужно ввести юзернейм игрока, которого нужно пригласить в команду\n"
-    + "так: <code>/tic @username</code> или <code>/tic username</code>.\n"
+    "* Правила телеграмм версии крестиков -ноликов*\n"
+    + "1)Чтобы начать игру нужно ввести юзернейм игрока,"
+    + " которого нужно пригласить в игру "
+    + "так: \n`/tic @username` или `/tic username`.\n"
     + "Игрок должен предварительно написать боту любое сообщение "
-    + "(чтобы он появился в базе данных)\n"
-    + "  2)Игрок должен одобрить запрос в личке бота\n"
-    + "  3)После этого случайный игрок станет первым(крестиком)\n"
-    + "  4)Игра завершается, когда:\n"
-    + "---1.Не остается свободных клеток\n"
-    + "---2.Один из игроков собирает три знака в ряд\n"
-    + "---3.Один из игорков отменит игру(сдастся)"
+    + "(чтобы бот мог ему написать)\n"
+    + "2)Простивник должен одобрить запрос в личке бота\n"
+    + "3)После этого случайный игрок станет первым (крестиком)\n"
+    + "4)Игра завершается, когда:\n"
+    + "- 1.Не остается свободных клеток\n"
+    + "- 2.Один из игроков собирает три знака в ряд\n"
+    + "- 3.Один из игроков отменит игру (сдастся)\n\n"
+    + "Кстати команда `/tic` никак не связана с одноименным"
+    + " предметом. Это сокращение от "
+    + "[Tic-tac-toe](https://en.wikipedia.org/wiki/Tic-tac-toe)"
 )
 
 
@@ -112,21 +118,43 @@ class MARKUP:
         But("Отклонить", None, _callback("ticinvite", "decline")),
     )
 
-
-"""
-    def KEYFIRST(field, fm):
-        keyboard = Mark()
-        for i in range(3):
-            for j in range(3):
-                if int(field[3 * i + j]["val"]) == 0:
+    def KEYFIRST(field):
+        size = 3
+        keyboard = Mark(size)
+        for i in range(size):
+            rows = []
+            for j in range(size):
+                cell = field[size * i + j]
+                if cell["val"] == 0:
                     text = "❌"
                     type = "OK"
                     data = type
-                elif int(field[3 * i + j]["val"]) == 1:
+                elif cell["val"] == 1:
                     text = "⭕️"
                     type = "OK"
                     data = type
-                elif fm == 0:
+                elif cell["val"] is None:
                     text = "⚫️"
-                    type = ""
-"""
+                    type = "ticlick"
+                    data = _callback(i, j)
+                rows.append(MARKUP.GAME(type, text, data))
+            keyboard.row(*rows)
+        return keyboard
+
+    def KEYSECOND(field):
+        keyboard = Mark()
+        for i in range(3):
+            rows = []
+            for j in range(3):
+                cell = field[3 * i + j]
+                if cell["val"] == 0:
+                    text = "❌"
+                elif cell["val"] == 1:
+                    text = "⭕️"
+                elif cell["val"] is None:
+                    text = "⚫️"
+                type = "OK"
+                data = type
+                rows.append(MARKUP.GAME(type, text, data))
+            keyboard.row(*rows)
+        return keyboard

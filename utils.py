@@ -31,7 +31,8 @@ else:
     uri = config.uri
     bot_id = config.bot_id
     url = config.url
-
+# Telebot on test
+# AsyncTeleBot on deploy
 bog = telebot.AsyncTeleBot(TOKEN)
 servak = MongoClient(uri)
 users = servak["userdb"]["users"]
@@ -56,6 +57,7 @@ def log(message):
             message.text,
             "None",
         )
+        # admin_id для теста
         bog.send_message(group1, html, parse_mode="html")
 
 

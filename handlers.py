@@ -216,7 +216,7 @@ def query_handler(call):
         if not find:
             return
         field = find["field"]
-        size = int(find["size"])
+        size = find["size"]
         if arr[1] == "plus":
             keyboard = minesweeper_utils.mark(size, field)
         elif arr[1] == "minus":
@@ -271,7 +271,7 @@ def query_handler(call):
                 {"$set": {"message": call.message.message_id}},
             )
             field = find["field"]
-            size = int(find["size"])
+            size = find["size"]
             keyboard = minesweeper_utils.board(size, field)
             bog.edit_message_text(
                 chat_id=call.message.chat.id,
@@ -348,7 +348,7 @@ def query_handler(call):
                 return
             tictac.delete_one({"_id2": call.message.chat.id})
             bog.send_message(
-                int(find["_id"]),
+                find["_id"],
                 f"Игрок @{call.message.chat.username} отклонил приглашение",
                 parse_mode="markdown",
             )
@@ -358,8 +358,7 @@ def query_handler(call):
         elif arr[1] == "accept":
             find = tictac.find_one({"_id2": call.message.chat.id})
             if not find:
-                admin = users.find_one({"_id": utils.admin_id})["n"]
-                bog.edit_message_text(f"Error. Напишите @{admin} если это произошло")
+                tic_utils.call_batya(call)
             tictac.update_one(
                 {"_id2": call.message.chat.id},
                 {"$set": {"mid2": call.message.message_id}},
@@ -368,6 +367,23 @@ def query_handler(call):
             tic_utils.begin_game(find)
         else:
             bog.answer_callback_query(call.id, call.data)
+    elif arr[0] == "ticlick":
+        n = int(arr[1])
+        m = int(arr[2])
+        id = call.message.chat.id
+        mid = call.message.message_id
+        find = tictac.find_one({"_id": id})
+        find2 = tictac.find_one({"_id2": id})
+        if find is not None:
+            find = find
+        elif find2 is not None:
+            find = find2
+        else:
+            bog.edit_message_text(
+                f"Возможно, игра удалена", call.message.chat.id, call.message.message_id,
+            )
+            return
+        tic_utils.play_game(n, m, find, id, mid)
     elif arr[0] == "OK":  # NIHOOYA
         bog.answer_callback_query(call.id, "Not changed")
     else:  # OCHEN NIHOOYA
