@@ -153,10 +153,10 @@ def begin_game(find):
         fm = find["mid2"]
         sm = find["mid"]
     bog.edit_message_text(
-        "Begin", first, fm, reply_markup=MARKUP.KEYFIRST(field),
+        "Ваш ход🕹", first, fm, reply_markup=MARKUP.KEYFIRST(field),
     )
     bog.edit_message_text(
-        "Begin2", second, sm, reply_markup=MARKUP.KEYSECOND(field),
+        "Ход противника🕹", second, sm, reply_markup=MARKUP.KEYSECOND(field),
     )
 
 
