@@ -110,7 +110,9 @@ def start(message):
                 text = "вашу прошлую игру с"
             enemyid = tictac.find_one({"_id": message.chat.id})["_id2"]
             enemy = users.find_one({"_id": enemyid})["n"]
-            bog.reply_to(message, f"Найдено {text} @{enemy}")
+            bog.reply_to(
+                message, f"Найдено {text} @{enemy}", reply_markup=MARKUP.SURRENDER
+            )
         elif tictac.find_one({"_id2": message.chat.id}):
             type = tictac.find_one({"_id2": message.chat.id})["m"]
             if int(type) == 2:
@@ -119,7 +121,9 @@ def start(message):
                 text = "вашу прошлую игру с"
             enemyid = tictac.find_one({"_id2": message.chat.id})["_id"]
             enemy = users.find_one({"_id": enemyid})["n"]
-            bog.reply_to(message, f"Найдено {text} @{enemy}")
+            bog.reply_to(
+                message, f"Найдено {text} @{enemy}", reply_markup=MARKUP.SURRENDER
+            )
 
 
 def begin_game(find):
