@@ -61,6 +61,24 @@ def log(message):
         bog.send_message(group1, html, parse_mode="html")
 
 
+def log_call(call):
+    if str(call.from_user.id) != admin_id:
+        kyiv = pytz.timezone("Europe/Kiev")
+        kyiv_time = kyiv.localize(datetime.now())
+        time = kyiv_time.strftime("%d %B %Y %H:%M:%S")
+        html = consts.html_message(
+            time,
+            "CALL",
+            call.from_user.first_name,
+            call.from_user.last_name,
+            call.from_user.username,
+            call.from_user.id,
+            call.message.text,
+            call.data,
+        )
+        bog.send_message(group2, html, parse_mode="html")
+
+
 def form(message):
     text = message.text
     chat = message.chat.id

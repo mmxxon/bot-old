@@ -132,6 +132,7 @@ def query_handler(call):
                 text="Теперь вам будут приходить только крупные обновления бота",
             )
     elif arr[0] == "size":  # RAZMER POLYANY
+        utils.log_call(call)
         size = int(arr[1])
         field = minesweeper_utils.empty(size)
         minbomb = int(size * size / 8)
@@ -301,6 +302,7 @@ def query_handler(call):
             bog.delete_message(call.message.chat.id, call.message.message_id)
             minesweeper_utils.stats(call.message)
     elif arr[0] == "ticinvite":
+        utils.log_call(call)
         if arr[1] == "yes":
             if tictac.find_one({"_id": int(arr[2])}) or tictac.find_one(
                 {"_id2": int(arr[2])}
