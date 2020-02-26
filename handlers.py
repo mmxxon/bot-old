@@ -384,7 +384,7 @@ def query_handler(call):
             enemy = find["_id"]
         tictac.delete_one(find)
         bog.delete_message(int(find["_id"]), int(find["mid"]))
-        bog.send_message(call.message.chat.id, "Вы сдались")
+        bog.edit_message_text("Вы сдались", call.message.chat.id, call.message.message_id)
         if find["mid2"] is not None:
             bog.send_message(enemy, f"Игрок @{call.message.chat.username} сдался")
             bog.edit_message_text(
