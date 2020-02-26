@@ -160,7 +160,7 @@ def begin_game(find):
     )
 
 
-def play_game(n, m, find, id, mid):
+def play_game(n, m, find, id, mid, call):
     if find["fm"] == find["m"]:
         mark = 0
     else:
@@ -184,8 +184,16 @@ def play_game(n, m, find, id, mid):
         fm = find["mid2"]
         sm = find["mid"]
     if whowon(field) == 1:
+        user1 = users.find_one({"_id": first})
+        u1name = user1["n"]
+        user2 = users.find_one({"_id": second})
+        u2name = user1["n"]
         bog.edit_message_text(
-            "Не в этот раз(🕹", second, sm, reply_markup=MARKUP.KEYSECOND(field)
+            f"Вы проиграли🕹 @{u1name}", second, sm, reply_markup=MARKUP.KEYSECOND(field)
+        )
+        bog.send_message(second, "Не в этот раз(🕹", reply_markup=MARKUP.KEYSECOND(field))
+        bog.answer_callback_query(
+            callback_query_id=call.id, text=f"@{u1name} 🏆Победил🏆 @{u2name}", show_alert=1
         )
         bog.edit_message_text(
             "🏆Победа!🏆", first, fm, reply_markup=MARKUP.KEYSECOND(field)

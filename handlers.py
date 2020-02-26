@@ -407,7 +407,7 @@ def query_handler(call):
                 f"Возможно, игра удалена", call.message.chat.id, call.message.message_id,
             )
             return
-        tic_utils.play_game(n, m, find, id, mid)
+        tic_utils.play_game(n, m, find, id, mid, call)
     elif arr[0] == "OK":  # NIHOOYA
         bog.answer_callback_query(call.id, "Not changed")
     else:  # OCHEN NIHOOYA
