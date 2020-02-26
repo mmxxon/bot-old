@@ -117,7 +117,10 @@ class MARKUP:
         But("Принять", None, _callback("ticinvite", "accept")),
         But("Отклонить", None, _callback("ticinvite", "decline")),
     )
-    SURRENDER = Mark().row(But("Сдаться", None, "ticsurrender"))
+
+    def SURRENDER(val):
+        keyboard = Mark().row(But("Сдаться", None, _callback("ticsurrender", val)))
+        return keyboard
 
     def KEYFIRST(field):
         size = 3

@@ -111,7 +111,7 @@ def start(message):
             enemyid = tictac.find_one({"_id": message.chat.id})["_id2"]
             enemy = users.find_one({"_id": enemyid})["n"]
             bog.reply_to(
-                message, f"Найдено {text} @{enemy}", reply_markup=MARKUP.SURRENDER
+                message, f"Найдено {text} @{enemy}", reply_markup=MARKUP.SURRENDER(0)
             )
         elif tictac.find_one({"_id2": message.chat.id}):
             type = tictac.find_one({"_id2": message.chat.id})["m"]
@@ -122,7 +122,7 @@ def start(message):
             enemyid = tictac.find_one({"_id2": message.chat.id})["_id"]
             enemy = users.find_one({"_id": enemyid})["n"]
             bog.reply_to(
-                message, f"Найдено {text} @{enemy}", reply_markup=MARKUP.SURRENDER
+                message, f"Найдено {text} @{enemy}", reply_markup=MARKUP.SURRENDER(1)
             )
 
 
