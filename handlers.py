@@ -384,7 +384,9 @@ def query_handler(call):
         bog.delete_message(int(find["_id"]), int(find["mid"]))
         bog.delete_message(int(find["_id2"]), int(find["mid2"]))
         bog.send_message(enemy, f"Игрок {call.message.chat.username}")
-        bog.send_message(call.message.chat.id, f"Вы сдались")
+        bog.edit_message_text(
+            f"Вы сдались", call.message.chat.id, call.message.message_id
+        )
     elif arr[0] == "ticlick":
         n = int(arr[1])
         m = int(arr[2])
