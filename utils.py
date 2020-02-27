@@ -18,9 +18,9 @@ if heroku_check():
     TOKEN = os.environ["TOKEN"]
     url = os.environ["URL"]
     admin_id = int(os.environ["ID"])
+    kat = int(os.environ["Kat"])
     uri = os.environ["MONGODB_URI"]
     bot_id = int(os.environ["BOT_ID"])
-    kat = os.environ["Kat"]
     group1 = os.environ["GR1"]
     group2 = os.environ["GR2"]
 else:
