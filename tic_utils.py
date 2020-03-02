@@ -202,9 +202,7 @@ def play_game(n, m, find, id, mid, call):
         return
     if isfull(field) == 1:
         bog.edit_message_text("Ничья🕹", first, fm, reply_markup=MARKUP.KEYSECOND(field))
-        bog.answer_callback_query(
-            callback_query_id=call.id, text=f"Ничья🕹 с @{u2name}", show_alert=1
-        )
+        bog.send_message(first, "Ничья🕹")
         bog.edit_message_text("Ничья🕹", second, sm, reply_markup=MARKUP.KEYSECOND(field))
         bog.send_message(second, "Ничья🕹")
         tictac.delete_one(find)
